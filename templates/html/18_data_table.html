@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Data Table Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-table {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+    }
+    
+    .header {
+      margin-bottom: 40px;
+    }
+    
+    .header h1 {
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .header h2 {
+      font-size: 18px;
+      color: var(--text-gray);
+      margin-top: 8px;
+    }
+    
+    .table-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead th {
+      text-align: left;
+      padding: 16px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-gray);
+      border-bottom: 2px solid var(--primary-orange);
+    }
+    
+    thead th:last-child {
+      text-align: right;
+    }
+    
+    tbody tr {
+      border-bottom: 1px solid #EEE;
+    }
+    
+    tbody tr:hover {
+      background: var(--background-light);
+    }
+    
+    tbody td {
+      padding: 20px;
+      font-size: 20px;
+      color: var(--text-black);
+    }
+    
+    tbody td:first-child {
+      font-weight: 600;
+    }
+    
+    tbody td:last-child {
+      text-align: right;
+      font-weight: 700;
+      color: var(--primary-orange);
+    }
+    
+    tbody td.highlight {
+      background: var(--primary-orange);
+      color: white;
+      font-weight: 700;
+    }
+    
+    .total-row td {
+      font-weight: 700;
+      font-size: 22px;
+      border-top: 2px solid var(--text-black);
+      border-bottom: none;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+      margin-top: auto;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-table">
+      <div class="header">
+        <h1>{{TITLE}}</h1>
+        <h2>{{SUBTITLE}}</h2>
+      </div>
+      
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>{{COL_1_HEADER}}</th>
+              <th>{{COL_2_HEADER}}</th>
+              <th>{{COL_3_HEADER}}</th>
+              <th>{{COL_4_HEADER}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="total-row">
+              <td>{{ROW_1_COL_1}}</td>
+              <td>{{ROW_1_COL_2}}</td>
+              <td>{{ROW_1_COL_3}}</td>
+              <td>{{ROW_1_COL_4}}</td>
+            </tr>
+            <tr>
+              <td>{{ROW_2_COL_1}}</td>
+              <td>{{ROW_2_COL_2}}</td>
+              <td>{{ROW_2_COL_3}}</td>
+              <td>{{ROW_2_COL_4}}</td>
+            </tr>
+            <tr>
+              <td>{{ROW_3_COL_1}}</td>
+              <td>{{ROW_3_COL_2}}</td>
+              <td>{{ROW_3_COL_3}}</td>
+              <td>{{ROW_3_COL_4}}</td>
+            </tr>
+            <tr>
+              <td>{{ROW_4_COL_1}}</td>
+              <td>{{ROW_4_COL_2}}</td>
+              <td>{{ROW_4_COL_3}}</td>
+              <td>{{ROW_4_COL_4}}</td>
+            </tr>
+            <tr>
+              <td>{{ROW_5_COL_1}}</td>
+              <td>{{ROW_5_COL_2}}</td>
+              <td>{{ROW_5_COL_3}}</td>
+              <td>{{ROW_5_COL_4}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">{{SLIDE_NUMBER}}</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.querySelectorAll('tbody tr').forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const hasContent = Array.from(cells).some(td => 
+        td.textContent.trim() && !td.textContent.includes('{{')
+      );
+      if (!hasContent) row.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

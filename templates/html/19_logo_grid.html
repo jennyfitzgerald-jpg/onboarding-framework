@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Logo Grid Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-logos {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+    }
+    
+    .header {
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .header h2 {
+      font-size: 18px;
+      color: var(--text-gray);
+      margin-top: 8px;
+    }
+    
+    .logo-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      padding: 20px 0;
+    }
+    
+    .logo-card {
+      background: var(--background-light);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .logo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .logo-card:empty {
+      display: none;
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .card-icon img {
+      max-width: 40px;
+      max-height: 40px;
+    }
+    
+    .card-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .card-description {
+      font-size: 16px;
+      color: var(--text-gray);
+      line-height: 1.5;
+      flex: 1;
+    }
+    
+    .card-tag {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 14px;
+      background: var(--primary-orange);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+      margin-top: auto;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-logos">
+      <div class="header">
+        <h1>{{TITLE}}</h1>
+        <h2>{{SUBTITLE}}</h2>
+      </div>
+      
+      <div class="logo-grid">
+        <div class="logo-card">
+          <div class="card-header">
+            <div class="card-icon">{{CARD_1_ICON}}</div>
+            <span class="card-name">{{CARD_1_NAME}}</span>
+          </div>
+          <p class="card-description">{{CARD_1_DESC}}</p>
+          <span class="card-tag">{{CARD_1_TAG}}</span>
+        </div>
+        
+        <div class="logo-card">
+          <div class="card-header">
+            <div class="card-icon">{{CARD_2_ICON}}</div>
+            <span class="card-name">{{CARD_2_NAME}}</span>
+          </div>
+          <p class="card-description">{{CARD_2_DESC}}</p>
+          <span class="card-tag">{{CARD_2_TAG}}</span>
+        </div>
+        
+        <div class="logo-card">
+          <div class="card-header">
+            <div class="card-icon">{{CARD_3_ICON}}</div>
+            <span class="card-name">{{CARD_3_NAME}}</span>
+          </div>
+          <p class="card-description">{{CARD_3_DESC}}</p>
+          <span class="card-tag">{{CARD_3_TAG}}</span>
+        </div>
+        
+        <div class="logo-card">
+          <div class="card-header">
+            <div class="card-icon">{{CARD_4_ICON}}</div>
+            <span class="card-name">{{CARD_4_NAME}}</span>
+          </div>
+          <p class="card-description">{{CARD_4_DESC}}</p>
+          <span class="card-tag">{{CARD_4_TAG}}</span>
+        </div>
+      </div>
+      
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">{{SLIDE_NUMBER}}</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.querySelectorAll('.logo-card').forEach(card => {
+      const name = card.querySelector('.card-name');
+      if (!name || !name.textContent.trim() || name.textContent.includes('{{')) {
+        card.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

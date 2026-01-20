@@ -1,0 +1,105 @@
+# ===========================================
+# .gitignore for Slide Template Framework
+# Use this when sharing the framework
+# ===========================================
+
+# ---------- SENSITIVE / COMPANY-SPECIFIC ----------
+
+# Reference materials (transcripts, meeting notes, financials)
+/reference/
+
+# Company-specific deck content
+consensus_deck.md
+
+# OAuth/API credentials  
+credentials.json
+
+# Firebase project config (contains project ID)
+.firebaserc
+
+# Company-specific deck configurations
+templates/deck_*.json
+
+# Generated presentations and outputs
+/output/
+
+# Company assets and images
+/assets/
+
+# Draft content and narratives
+/docs/drafts/
+
+# Planning docs with company details
+/docs/planning/
+
+# Strategy documents (company-specific)
+/docs/strategy/
+
+# Guides with company-specific references
+/docs/guides/
+
+# KEEP: Shareable documentation
+# !docs/shareable/
+
+# ---------- CREDENTIALS & AUTH ----------
+
+# OAuth tokens and credentials
+*.pickle
+token.pickle
+/config/
+service-account*.json
+*.json.bak
+
+# Firebase credentials (keep firebase.json, exclude secrets)
+.firebase/
+
+# Environment files
+.env
+.env.*
+
+# ---------- GENERATED / BUILD ----------
+
+# Node modules
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Rendered outputs (regeneratable)
+*_output/
+_renders/
+
+# Slide builder app outputs (if not using)
+/slide_builder_app/
+
+# ---------- IDE / SYSTEM ----------
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# ---------- LOGS ----------
+
+*.log
+npm-debug.log*
+
+# ---------- OPTIONAL: KEEP OR REMOVE ----------
+
+# Uncomment to exclude PNG reference images (saves space)
+# templates/*.png
+
+# Uncomment to exclude the full scripts folder
+# /scripts/

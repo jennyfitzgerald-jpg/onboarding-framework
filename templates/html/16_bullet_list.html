@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Bullet List Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-bullets {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+    }
+    
+    .header {
+      margin-bottom: 50px;
+    }
+    
+    .header h1 {
+      font-size: 54px;
+      font-weight: 700;
+      color: var(--text-black);
+      line-height: 1.2;
+    }
+    
+    .header .accent {
+      display: block;
+      width: 80px;
+      height: 5px;
+      background: var(--primary-orange);
+      margin-top: 20px;
+    }
+    
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 20px 0;
+      font-size: 26px;
+      color: var(--text-black);
+      line-height: 1.4;
+      border-bottom: 1px solid #EEE;
+    }
+    
+    .bullet-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .bullet-list li:empty,
+    .bullet-list li:has(.item-text:empty) {
+      display: none;
+    }
+    
+    .bullet-icon {
+      width: 12px;
+      height: 12px;
+      background: var(--primary-orange);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 12px;
+    }
+    
+    .item-text {
+      flex: 1;
+    }
+    
+    .item-text strong {
+      color: var(--primary-orange);
+      font-weight: 700;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+      margin-top: auto;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-bullets">
+      <div class="header">
+        <h1>{{TITLE}}</h1>
+        <span class="accent"></span>
+      </div>
+      
+      <div class="content">
+        <ul class="bullet-list">
+          <li><span class="bullet-icon"></span><span class="item-text">{{ITEM_1}}</span></li>
+          <li><span class="bullet-icon"></span><span class="item-text">{{ITEM_2}}</span></li>
+          <li><span class="bullet-icon"></span><span class="item-text">{{ITEM_3}}</span></li>
+          <li><span class="bullet-icon"></span><span class="item-text">{{ITEM_4}}</span></li>
+          <li><span class="bullet-icon"></span><span class="item-text">{{ITEM_5}}</span></li>
+        </ul>
+      </div>
+      
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">{{SLIDE_NUMBER}}</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Hide empty items
+    document.querySelectorAll('.item-text').forEach(el => {
+      if (!el.textContent.trim() || el.textContent.includes('{{')) {
+        el.parentElement.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PERSON_NAME}} — Memorial</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Override for memorial slide - black background with orange accents */
+    body {
+      background: #0a0a0a !important;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .memorial-slide {
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 120px 0 0 0;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Subtle texture overlay */
+    .memorial-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(255,140,0,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    
+    .portrait-section {
+      width: 40%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-left: 100px;
+      padding-top: 80px;
+    }
+    
+    .portrait-circle {
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      border: 4px solid #ff8c00;
+      box-shadow: 
+        0 0 60px rgba(255, 140, 0, 0.2),
+        0 0 100px rgba(255, 140, 0, 0.1),
+        inset 0 0 30px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .portrait-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .portrait-placeholder {
+      font-size: 180px;
+      color: #ff8c00;
+      opacity: 0.3;
+    }
+    
+    .content-section {
+      width: 60%;
+      padding: 80px 120px 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    
+    .quote-mark {
+      font-size: 120px;
+      color: #ff8c00;
+      font-family: Georgia, serif;
+      line-height: 0.5;
+      margin-bottom: 20px;
+      text-shadow: 0 0 30px rgba(255, 140, 0, 0.3);
+    }
+    
+    .quote-text {
+      font-size: 36px;
+      color: #ffffff;
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 50px;
+      font-style: italic;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    
+    .person-info {
+      border-top: 2px solid #ff8c00;
+      padding-top: 30px;
+    }
+    
+    .person-name {
+      font-size: 42px;
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    
+    .person-role {
+      font-size: 24px;
+      color: #ff8c00;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    /* Orange accent line */
+    .memorial-slide::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #ff8c00 0%, #ff6600 50%, #ff8c00 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="memorial-slide">
+    <div class="portrait-section">
+      <div class="portrait-circle">
+        <script>
+          var portraitUrl = "{{PORTRAIT_URL}}";
+          if (portraitUrl && portraitUrl !== "{{PORTRAIT_URL}}" && portraitUrl.trim() !== "") {
+            document.write('<img src="' + portraitUrl + '" alt="{{PERSON_NAME}}">');
+          } else {
+            document.write('<span class="portrait-placeholder">✝</span>');
+          }
+        </script>
+        <noscript><span class="portrait-placeholder">✝</span></noscript>
+      </div>
+    </div>
+    
+    <div class="content-section">
+      <div class="quote-mark">"</div>
+      <div class="quote-text">{{QUOTE_TEXT}}</div>
+      <div class="person-info">
+        <div class="person-name">{{PERSON_NAME}}</div>
+        <div class="person-role">{{PERSON_ROLE}}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

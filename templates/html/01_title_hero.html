@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Title Hero Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-title-hero {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+      position: relative;
+    }
+    
+    .logo {
+      position: absolute;
+      top: 40px;
+      left: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-black);
+    }
+    
+    .title-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 900px;
+    }
+    
+    .accent-bar {
+      width: 80px;
+      height: 6px;
+      background: var(--primary-orange);
+      margin-bottom: 30px;
+    }
+    
+    .title-section h1 {
+      font-size: 80px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text-black);
+      margin-bottom: 30px;
+    }
+    
+    .subtitle-text {
+      font-size: 28px;
+      color: var(--text-gray);
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+    
+    .presenter-badge {
+      display: inline-block;
+      background: var(--primary-orange);
+      color: white;
+      padding: 12px 28px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+    }
+    
+    .tagline {
+      font-size: 16px;
+      color: var(--text-gray);
+      font-style: italic;
+    }
+    
+    .date {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-title-hero">
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <span class="logo-text">DECIPHEX</span>
+      </div>
+      
+      <!-- Title -->
+      <div class="title-section">
+        <div class="accent-bar"></div>
+        <h1>{{TITLE_LINE_1}}<br>{{TITLE_LINE_2}}</h1>
+        <p class="subtitle-text">{{SUBTITLE}}</p>
+        <span class="presenter-badge">{{PRESENTER_NAME}}</span>
+      </div>
+      
+      <!-- Footer -->
+      <div class="slide-footer">
+        <span class="tagline">{{TAGLINE}}</span>
+        <span class="date">{{DATE}}</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

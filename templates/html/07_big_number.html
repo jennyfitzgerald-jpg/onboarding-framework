@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Big Number Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-big-number {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 40px 60px;
+    }
+    
+    .title-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #EEE;
+    }
+    
+    .accent-bar {
+      width: 60px;
+      height: 4px;
+      background: var(--primary-orange);
+    }
+    
+    .title-bar h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .number-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 0;
+    }
+    
+    .big-number {
+      font-size: 200px;
+      font-weight: 900;
+      color: var(--primary-orange);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    
+    .number-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 60px;
+    }
+    
+    .description {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .growth-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .growth-arrows {
+      display: flex;
+      position: relative;
+    }
+    
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 25px solid var(--primary-orange);
+    }
+    
+    .arrow.faded {
+      opacity: 0.25;
+      margin-left: -20px;
+    }
+    
+    .growth-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid #EEE;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 12px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    
+    .footer-right .label {
+      color: var(--primary-orange);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-big-number">
+      <!-- Title bar -->
+      <div class="title-bar">
+        <div class="accent-bar"></div>
+        <h1>{{TITLE}}</h1>
+      </div>
+      
+      <!-- Big number section -->
+      <div class="number-section">
+        <div class="big-number">{{BIG_NUMBER}}</div>
+        <div class="number-row">
+          <span class="description">{{DESCRIPTION}}</span>
+          <div class="growth-section">
+            <div class="growth-arrows">
+              <div class="arrow faded"></div>
+              <div class="arrow"></div>
+            </div>
+            <span class="growth-value">{{GROWTH_VALUE}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">
+          <span class="label">slide</span>
+          <span>{{SLIDE_NUMBER}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

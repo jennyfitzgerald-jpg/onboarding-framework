@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deciphex Slide Templates</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: white;
+      padding: 40px;
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #888;
+      margin-bottom: 40px;
+    }
+    
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 30px;
+    }
+    
+    .template-card {
+      background: #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .template-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(255, 77, 0, 0.2);
+    }
+    
+    .template-preview {
+      aspect-ratio: 16/9;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #444;
+    }
+    
+    .template-preview iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      transform: scale(0.5);
+      transform-origin: center center;
+      pointer-events: none;
+    }
+    
+    .template-info {
+      padding: 20px;
+    }
+    
+    .template-number {
+      color: #FF4D00;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .template-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .template-desc {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+    
+    .template-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    
+    .btn-primary {
+      background: #FF4D00;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #E64500;
+    }
+    
+    .btn-secondary {
+      background: #444;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Deciphex Slide Templates</h1>
+  <p class="subtitle">23 HTML templates matching the Deciphex presentation design system</p>
+  
+  <div class="templates-grid">
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../01_title_hero.png" alt="Title Hero" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 01</span>
+        <h3 class="template-name">Title Hero</h3>
+        <p class="template-desc">Opening slides with hero image, bold title, and presenter badge</p>
+        <div class="template-actions">
+          <a href="01_title_hero.html" class="btn btn-primary">View HTML</a>
+          <a href="../01_title_hero.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../02_quote_portrait.png" alt="Quote Portrait" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 02</span>
+        <h3 class="template-name">Quote with Portrait</h3>
+        <p class="template-desc">Inspirational quotes with portrait photo and attribution</p>
+        <div class="template-actions">
+          <a href="02_quote_portrait.html" class="btn btn-primary">View HTML</a>
+          <a href="../02_quote_portrait.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../03_statement_bold.png" alt="Bold Statement" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 03</span>
+        <h3 class="template-name">Bold Statement</h3>
+        <p class="template-desc">Mission statements and key messages with emphasis</p>
+        <div class="template-actions">
+          <a href="03_statement_bold.html" class="btn btn-primary">View HTML</a>
+          <a href="../03_statement_bold.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../04_content_image.png" alt="Content Image" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 04</span>
+        <h3 class="template-name">Content + Image</h3>
+        <p class="template-desc">Bullet list with supporting image and CTA</p>
+        <div class="template-actions">
+          <a href="04_content_image.html" class="btn btn-primary">View HTML</a>
+          <a href="../04_content_image.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../05_data_dashboard.png" alt="Data Dashboard" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 05</span>
+        <h3 class="template-name">Data Dashboard</h3>
+        <p class="template-desc">Statistics, charts, and data visualizations</p>
+        <div class="template-actions">
+          <a href="05_data_dashboard.html" class="btn btn-primary">View HTML</a>
+          <a href="../05_data_dashboard.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../06_case_study.png" alt="Case Study" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 06</span>
+        <h3 class="template-name">Case Study</h3>
+        <p class="template-desc">Customer testimonials with metrics and charts</p>
+        <div class="template-actions">
+          <a href="06_case_study.html" class="btn btn-primary">View HTML</a>
+          <a href="../06_case_study.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../07_big_number.png" alt="Big Number" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 07</span>
+        <h3 class="template-name">Big Number</h3>
+        <p class="template-desc">Giant statistics with growth indicators</p>
+        <div class="template-actions">
+          <a href="07_big_number.html" class="btn btn-primary">View HTML</a>
+          <a href="../07_big_number.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../08_comparison.png" alt="Comparison" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 08</span>
+        <h3 class="template-name">Comparison</h3>
+        <p class="template-desc">Side-by-side comparison with sidebar</p>
+        <div class="template-actions">
+          <a href="08_comparison.html" class="btn btn-primary">View HTML</a>
+          <a href="../08_comparison.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../09_multi_column.png" alt="Multi Column" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 09</span>
+        <h3 class="template-name">Multi-Column</h3>
+        <p class="template-desc">Numbered stages, phases, or maturity models</p>
+        <div class="template-actions">
+          <a href="09_multi_column.html" class="btn btn-primary">View HTML</a>
+          <a href="../09_multi_column.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../10_numbered_list.png" alt="Numbered List" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 10</span>
+        <h3 class="template-name">Numbered List</h3>
+        <p class="template-desc">Strategic priorities and action items</p>
+        <div class="template-actions">
+          <a href="10_numbered_list.html" class="btn btn-primary">View HTML</a>
+          <a href="../10_numbered_list.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../11_feature_cards.png" alt="Feature Cards" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 11</span>
+        <h3 class="template-name">Feature Cards</h3>
+        <p class="template-desc">4-column feature cards with badges</p>
+        <div class="template-actions">
+          <a href="11_feature_cards.html" class="btn btn-primary">View HTML</a>
+          <a href="../11_feature_cards.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../12_process_flow.png" alt="Process Flow" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 12</span>
+        <h3 class="template-name">Process Flow</h3>
+        <p class="template-desc">Numbered steps with arrows and feedback loop</p>
+        <div class="template-actions">
+          <a href="12_process_flow.html" class="btn btn-primary">View HTML</a>
+          <a href="../12_process_flow.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../13_timeline_table.png" alt="Timeline Table" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 13</span>
+        <h3 class="template-name">Timeline Table</h3>
+        <p class="template-desc">Horizontal timeline with comparison rows</p>
+        <div class="template-actions">
+          <a href="13_timeline_table.html" class="btn btn-primary">View HTML</a>
+          <a href="../13_timeline_table.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../14_section_opener.png" alt="Section Opener" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 14</span>
+        <h3 class="template-name">Section Opener</h3>
+        <p class="template-desc">Simple section break with image and title</p>
+        <div class="template-actions">
+          <a href="14_section_opener.html" class="btn btn-primary">View HTML</a>
+          <a href="../14_section_opener.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview">
+        <img src="../15_photo_testimonial.png" alt="Photo Testimonial" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 15</span>
+        <h3 class="template-name">Photo Testimonial</h3>
+        <p class="template-desc">Full-bleed testimonial with photo and colored background</p>
+        <div class="template-actions">
+          <a href="15_photo_testimonial.html" class="btn btn-primary">View HTML</a>
+          <a href="../15_photo_testimonial.png" class="btn btn-secondary">View PNG</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">📝</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 16</span>
+        <h3 class="template-name">Bullet List</h3>
+        <p class="template-desc">Simple bullet points with orange accents</p>
+        <div class="template-actions">
+          <a href="16_bullet_list.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">⚖️</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 17</span>
+        <h3 class="template-name">Two-Column Compare</h3>
+        <p class="template-desc">Side-by-side comparison with icons</p>
+        <div class="template-actions">
+          <a href="17_two_column_compare.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">📊</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 18</span>
+        <h3 class="template-name">Data Table</h3>
+        <p class="template-desc">Tabular data with orange header row</p>
+        <div class="template-actions">
+          <a href="18_data_table.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">🎴</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 19</span>
+        <h3 class="template-name">Logo Grid</h3>
+        <p class="template-desc">2x2 grid of cards with icons and tags</p>
+        <div class="template-actions">
+          <a href="19_logo_grid.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">🛤️</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 20</span>
+        <h3 class="template-name">Journey</h3>
+        <p class="template-desc">Timeline/milestone stages with callout</p>
+        <div class="template-actions">
+          <a href="20_journey.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">🏢</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 21</span>
+        <h3 class="template-name">Key Accounts</h3>
+        <p class="template-desc">Account cards with metrics and highlights</p>
+        <div class="template-actions">
+          <a href="21_key_accounts.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">🕯️</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 22</span>
+        <h3 class="template-name">Memorial</h3>
+        <p class="template-desc">In memoriam slides with portrait and quote</p>
+        <div class="template-actions">
+          <a href="22_memorial.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="template-card">
+      <div class="template-preview" style="background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 48px;">💝</div>
+      <div class="template-info">
+        <span class="template-number">TEMPLATE 23</span>
+        <h3 class="template-name">GoFundMe</h3>
+        <p class="template-desc">Fundraising callout with support message</p>
+        <div class="template-actions">
+          <a href="23_gofundme.html" class="btn btn-primary">View HTML</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

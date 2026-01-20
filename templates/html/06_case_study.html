@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Case Study Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-case-study {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      grid-template-rows: auto 1fr auto auto;
+      height: 100%;
+      padding: 40px 60px;
+      gap: 30px;
+    }
+    
+    .title-row {
+      grid-column: 1 / -1;
+    }
+    
+    .title-row h1 {
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .quote-section {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .quote-mark {
+      font-size: 60px;
+      color: var(--primary-orange);
+      font-family: Georgia, serif;
+      line-height: 0.5;
+      margin-bottom: 20px;
+    }
+    
+    .testimonial-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-black);
+      margin-bottom: 20px;
+    }
+    
+    .testimonial-text strong {
+      font-weight: 700;
+    }
+    
+    .customer-logo {
+      margin-top: auto;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .customer-logo img {
+      height: 100%;
+      width: auto;
+    }
+    
+    .metrics-section {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .metrics-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+    
+    .metric-callout {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+    
+    .metric-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--primary-orange);
+      line-height: 1;
+    }
+    
+    .metric-desc {
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+    
+    .metrics-row {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    .bar-chart {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 180px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #EEE;
+    }
+    
+    .bar-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+    
+    .bar {
+      width: 100%;
+      background: var(--primary-orange);
+      margin-top: auto;
+    }
+    
+    .bar-label {
+      font-size: 10px;
+      color: var(--text-gray);
+      margin-top: 5px;
+    }
+    
+    .summary-row {
+      grid-column: 1 / -1;
+      padding: 20px 0;
+      border-top: 1px solid #EEE;
+    }
+    
+    .summary-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-black);
+      margin-bottom: 15px;
+    }
+    
+    .benefits-row {
+      display: flex;
+      gap: 40px;
+    }
+    
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-gray);
+    }
+    
+    .benefit-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--primary-orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+    }
+    
+    .footer-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+    }
+    
+    .footer-brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-black);
+      border: 1px solid #DDD;
+      padding: 6px 12px;
+    }
+    
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    
+    .footer-right .label {
+      color: var(--primary-orange);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-case-study">
+      <!-- Title -->
+      <div class="title-row">
+        <h1>{{TITLE}}</h1>
+      </div>
+      
+      <!-- Quote section -->
+      <div class="quote-section">
+        <span class="quote-mark">"</span>
+        <p class="testimonial-text">
+          {{TESTIMONIAL_TEXT}}
+        </p>
+        <div class="customer-logo">
+          <img src="{{CUSTOMER_LOGO_URL}}" alt="{{CUSTOMER_NAME}}" onerror="this.parentElement.innerHTML='{{CUSTOMER_NAME}}'">
+        </div>
+      </div>
+      
+      <!-- Metrics section -->
+      <div class="metrics-section">
+        <div class="metrics-header">
+          <span class="metric-label">{{CHART_PERIOD}}</span>
+          <span class="metric-label">{{CHART_METRIC}}</span>
+        </div>
+        
+        <div class="metrics-row">
+          <div class="metric-callout">
+            <span class="metric-number">{{METRIC_1_VALUE}}</span>
+            <span class="metric-desc">{{METRIC_1_LABEL}}</span>
+          </div>
+          <div class="metric-callout">
+            <span class="metric-number">{{METRIC_2_VALUE}}</span>
+            <span class="metric-desc">{{METRIC_2_LABEL}}</span>
+          </div>
+          <div class="metric-callout">
+            <span class="metric-number">{{METRIC_3_VALUE}}</span>
+            <span class="metric-desc">{{METRIC_3_LABEL}}</span>
+          </div>
+        </div>
+        
+        <div class="bar-chart">
+          <!-- Generate bars dynamically -->
+          <div class="bar-wrapper"><div class="bar" style="height: 15%"></div><span class="bar-label">1</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 10%"></div><span class="bar-label">2</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 25%"></div><span class="bar-label">3</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 50%"></div><span class="bar-label">4</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 65%"></div><span class="bar-label">5</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 78%"></div><span class="bar-label">6</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 70%"></div><span class="bar-label">7</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 90%"></div><span class="bar-label">8</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 82%"></div><span class="bar-label">9</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 85%"></div><span class="bar-label">10</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 55%"></div><span class="bar-label">11</span></div>
+          <div class="bar-wrapper"><div class="bar" style="height: 100%"></div><span class="bar-label">12</span></div>
+        </div>
+      </div>
+      
+      <!-- Summary row -->
+      <div class="summary-row">
+        <p class="summary-text">{{SUMMARY_TEXT}}</p>
+        <div class="benefits-row">
+          <div class="benefit-item">
+            <div class="benefit-icon">✓</div>
+            <span>{{BENEFIT_1}}</span>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">✓</div>
+            <span>{{BENEFIT_2}}</span>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">✓</div>
+            <span>{{BENEFIT_3}}</span>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">✓</div>
+            <span>{{BENEFIT_4}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer-row">
+        <span class="footer-brand">{{BRAND_NAME}}</span>
+        <div class="footer-right">
+          <span class="label">slide</span>
+          <span>{{SLIDE_NUMBER}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

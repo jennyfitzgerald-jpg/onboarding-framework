@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Numbered List Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-numbered-list {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      grid-template-rows: 1fr auto;
+      height: 100%;
+      padding: 60px;
+      gap: 40px;
+    }
+    
+    .title-section {
+      display: flex;
+      flex-direction: column;
+      padding-top: 40px;
+    }
+    
+    .title-section h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-black);
+      line-height: 1.3;
+    }
+    
+    .list-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .numbered-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .numbered-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 30px;
+      padding: 12px 0;
+      border-bottom: 1px solid transparent;
+    }
+    
+    .numbered-list li:hover {
+      border-bottom-color: #EEE;
+    }
+    
+    .item-number {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-orange);
+      min-width: 30px;
+    }
+    
+    .item-text {
+      font-size: 18px;
+      color: var(--text-black);
+      line-height: 1.4;
+    }
+    
+    .item-text strong {
+      font-weight: 700;
+    }
+    
+    .footer {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid #EEE;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 12px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    
+    .footer-right .label {
+      color: var(--primary-orange);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-numbered-list">
+      <!-- Title section -->
+      <div class="title-section">
+        <h1>{{SECTION_TITLE}}</h1>
+      </div>
+      
+      <!-- Numbered list -->
+      <div class="list-section">
+        <ol class="numbered-list">
+          <li>
+            <span class="item-number">1.</span>
+            <span class="item-text">{{ITEM_1_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">2.</span>
+            <span class="item-text">{{ITEM_2_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">3.</span>
+            <span class="item-text">{{ITEM_3_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">4.</span>
+            <span class="item-text">{{ITEM_4_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">5.</span>
+            <span class="item-text">{{ITEM_5_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">6.</span>
+            <span class="item-text">{{ITEM_6_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">7.</span>
+            <span class="item-text">{{ITEM_7_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">8.</span>
+            <span class="item-text">{{ITEM_8_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">9.</span>
+            <span class="item-text">{{ITEM_9_TEXT}}</span>
+          </li>
+          <li>
+            <span class="item-number">10.</span>
+            <span class="item-text">{{ITEM_10_TEXT}}</span>
+          </li>
+        </ol>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">
+          <span class="label">slide</span>
+          <span>{{SLIDE_NUMBER}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

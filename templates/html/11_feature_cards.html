@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Feature Cards Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-feature-cards {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 40px 60px;
+    }
+    
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+    
+    .title-block h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-black);
+      margin-bottom: 15px;
+    }
+    
+    .title-block .subtitle {
+      font-size: 16px;
+      color: var(--text-gray);
+      line-height: 1.5;
+    }
+    
+    .hero-image {
+      height: 200px;
+      background: linear-gradient(135deg, #F8E8F8 0%, #E8D8F8 100%);
+      overflow: hidden;
+    }
+    
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .section-title {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--text-black);
+      margin-bottom: 25px;
+    }
+    
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+    
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-badge {
+      background: var(--primary-orange);
+      color: white;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .card-badge::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 10px solid var(--primary-orange);
+    }
+    
+    .card-content {
+      font-size: 14px;
+      color: var(--text-black);
+      line-height: 1.6;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid #EEE;
+      margin-top: auto;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 12px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    
+    .footer-right .label {
+      color: var(--primary-orange);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-feature-cards">
+      <!-- Header section -->
+      <div class="header-section">
+        <div class="title-block">
+          <h1>{{TITLE}}</h1>
+          <p class="subtitle">{{SUBTITLE}}</p>
+        </div>
+        <div class="hero-image">
+          <img src="{{HERO_IMAGE_URL}}" alt="{{TITLE}}" onerror="this.style.display='none'">
+        </div>
+      </div>
+      
+      <!-- Section title -->
+      <h2 class="section-title">{{SECTION_TITLE}}</h2>
+      
+      <!-- Feature cards -->
+      <div class="cards-container">
+        <div class="feature-card">
+          <div class="card-badge">{{CARD_1_TITLE}}</div>
+          <p class="card-content">{{CARD_1_CONTENT}}</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="card-badge">{{CARD_2_TITLE}}</div>
+          <p class="card-content">{{CARD_2_CONTENT}}</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="card-badge">{{CARD_3_TITLE}}</div>
+          <p class="card-content">{{CARD_3_CONTENT}}</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="card-badge">{{CARD_4_TITLE}}</div>
+          <p class="card-content">{{CARD_4_CONTENT}}</p>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+        <div class="footer-right">
+          <span class="label">slide</span>
+          <span>{{SLIDE_NUMBER}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

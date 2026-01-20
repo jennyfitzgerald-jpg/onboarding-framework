@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Key Accounts Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-accounts {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 50px 70px;
+    }
+    
+    .header {
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 50px;
+      font-weight: 700;
+      color: var(--text-black);
+    }
+    
+    .header h2 {
+      font-size: 18px;
+      color: var(--text-gray);
+      margin-top: 6px;
+    }
+    
+    .accounts-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .account-card {
+      background: var(--background-light);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      border-left: 4px solid var(--primary-orange);
+    }
+    
+    .account-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-black);
+      margin-bottom: 6px;
+    }
+    
+    .account-value {
+      font-size: 16px;
+      color: var(--primary-orange);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .account-status {
+      font-size: 14px;
+      color: var(--text-gray);
+      line-height: 1.4;
+    }
+    
+    .highlight-box {
+      background: var(--primary-orange);
+      color: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: auto;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    
+    .highlight-stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .highlight-text {
+      flex: 1;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid #EEE;
+      margin-top: 20px;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-accounts">
+      <div class="header">
+        <h1>{{TITLE}}</h1>
+        <h2>{{SUBTITLE}}</h2>
+      </div>
+      
+      <div class="accounts-grid">
+        <div class="account-card">
+          <span class="account-name">{{ACCOUNT_1_NAME}}</span>
+          <span class="account-value">{{ACCOUNT_1_VALUE}}</span>
+          <span class="account-status">{{ACCOUNT_1_STATUS}}</span>
+        </div>
+        
+        <div class="account-card">
+          <span class="account-name">{{ACCOUNT_2_NAME}}</span>
+          <span class="account-value">{{ACCOUNT_2_VALUE}}</span>
+          <span class="account-status">{{ACCOUNT_2_STATUS}}</span>
+        </div>
+        
+        <div class="account-card">
+          <span class="account-name">{{ACCOUNT_3_NAME}}</span>
+          <span class="account-value">{{ACCOUNT_3_VALUE}}</span>
+          <span class="account-status">{{ACCOUNT_3_STATUS}}</span>
+        </div>
+        
+        <div class="account-card">
+          <span class="account-name">{{ACCOUNT_4_NAME}}</span>
+          <span class="account-value">{{ACCOUNT_4_VALUE}}</span>
+          <span class="account-status">{{ACCOUNT_4_STATUS}}</span>
+        </div>
+      </div>
+      
+      <div class="highlight-box">
+        <div class="highlight-stat">
+          <span class="stat-value">{{STAT_1_VALUE}}</span>
+          <span class="stat-label">{{STAT_1_LABEL}}</span>
+        </div>
+        <div class="highlight-stat">
+          <span class="stat-value">{{STAT_2_VALUE}}</span>
+          <span class="stat-label">{{STAT_2_LABEL}}</span>
+        </div>
+        <span class="highlight-text">{{HIGHLIGHT_TEXT}}</span>
+      </div>
+      
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

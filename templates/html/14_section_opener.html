@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Section Opener Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-section-opener {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+      position: relative;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: auto;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .content-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .accent-bar {
+      width: 80px;
+      height: 6px;
+      background: var(--primary-orange);
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--text-black);
+      line-height: 1.15;
+      max-width: 900px;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-section-opener">
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <span class="logo-text">DECIPHEX</span>
+      </div>
+      
+      <!-- Content -->
+      <div class="content-section">
+        <div class="accent-bar"></div>
+        <h1 class="section-title">{{TITLE}}</h1>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+          <span class="footer-title">{{DECK_TITLE}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Journey Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-journey {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 60px 80px;
+    }
+    
+    .header {
+      margin-bottom: 60px;
+    }
+    
+    .header h1 {
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text-black);
+      margin: 0;
+    }
+    
+    .timeline-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    
+    /* Stage labels row */
+    .stage-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 0 20px;
+    }
+    
+    .stage-label {
+      width: 220px;
+      text-align: center;
+    }
+    
+    .stage-year {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-orange);
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .stage-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-black);
+      display: block;
+    }
+    
+    /* Timeline row with dots and arrow */
+    .timeline-row {
+      position: relative;
+      height: 60px;
+      margin-bottom: 30px;
+    }
+    
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      right: 30px;
+      height: 4px;
+      background: linear-gradient(to right, #CCC 0%, #CCC 20%, var(--primary-orange) 80%, var(--primary-orange) 100%);
+      transform: translateY(-50%);
+    }
+    
+    .timeline-arrow {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 24px solid var(--primary-orange);
+    }
+    
+    .timeline-dots {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      right: 60px;
+      transform: translateY(-50%);
+    }
+    
+    .stage-dot {
+      width: 28px;
+      height: 28px;
+      background: white;
+      border: 4px solid #CCC;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .stage-dot:nth-child(3),
+    .stage-dot:nth-child(4) {
+      border-color: var(--primary-orange);
+    }
+    
+    .stage-dot:last-child {
+      background: var(--primary-orange);
+      border-color: var(--primary-orange);
+    }
+    
+    /* Stage descriptions row */
+    .stage-descriptions {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    
+    .stage-desc {
+      width: 220px;
+      font-size: 15px;
+      color: var(--text-gray);
+      text-align: center;
+      line-height: 1.5;
+    }
+    
+    .callout {
+      background: var(--primary-orange);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      margin-top: 50px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .callout-icon {
+      font-size: 32px;
+    }
+    
+    .callout-text {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid #EEE;
+      margin-top: auto;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-orange);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    }
+    
+    .footer-title {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+    
+    .footer-right {
+      font-size: 14px;
+      color: var(--text-light-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-journey">
+      <div class="header">
+        <h1>{{TITLE}}</h1>
+      </div>
+      
+      <div class="timeline-container">
+        <!-- Stage Labels (Year + Title) -->
+        <div class="stage-labels">
+          <div class="stage-label">
+            <span class="stage-year">{{STAGE_1_YEAR}}</span>
+            <span class="stage-title">{{STAGE_1_TITLE}}</span>
+          </div>
+          <div class="stage-label">
+            <span class="stage-year">{{STAGE_2_YEAR}}</span>
+            <span class="stage-title">{{STAGE_2_TITLE}}</span>
+          </div>
+          <div class="stage-label">
+            <span class="stage-year">{{STAGE_3_YEAR}}</span>
+            <span class="stage-title">{{STAGE_3_TITLE}}</span>
+          </div>
+          <div class="stage-label">
+            <span class="stage-year">{{STAGE_4_YEAR}}</span>
+            <span class="stage-title">{{STAGE_4_TITLE}}</span>
+          </div>
+        </div>
+        
+        <!-- Timeline with dots -->
+        <div class="timeline-row">
+          <div class="timeline-line"></div>
+          <div class="timeline-arrow"></div>
+          <div class="timeline-dots">
+            <div class="stage-dot"></div>
+            <div class="stage-dot"></div>
+            <div class="stage-dot"></div>
+            <div class="stage-dot"></div>
+          </div>
+        </div>
+        
+        <!-- Stage Descriptions -->
+        <div class="stage-descriptions">
+          <div class="stage-desc">{{STAGE_1_DESC}}</div>
+          <div class="stage-desc">{{STAGE_2_DESC}}</div>
+          <div class="stage-desc">{{STAGE_3_DESC}}</div>
+          <div class="stage-desc">{{STAGE_4_DESC}}</div>
+        </div>
+      </div>
+      
+      <div class="callout">
+        <span class="callout-icon">{{CALLOUT_ICON}}</span>
+        <span class="callout-text">{{CALLOUT_TEXT}}</span>
+      </div>
+      
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-logo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

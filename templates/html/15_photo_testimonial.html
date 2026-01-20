@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Photo Testimonial Template</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .slide-photo-testimonial {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100%;
+      background: linear-gradient(135deg, #4A1A6B 0%, #2D1B4E 50%, #1A0F2E 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Decorative swirls */
+    .swirl {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+    
+    .swirl-1 {
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      border: 60px solid #E91E8C;
+    }
+    
+    .swirl-2 {
+      bottom: -150px;
+      right: 100px;
+      width: 300px;
+      height: 300px;
+      border: 50px solid #E91E8C;
+    }
+    
+    .content-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      z-index: 1;
+    }
+    
+    .brand-logo {
+      margin-bottom: 40px;
+    }
+    
+    .brand-logo .main {
+      font-size: 28px;
+      font-weight: 700;
+      color: #E91E8C;
+    }
+    
+    .brand-logo .sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 5px;
+    }
+    
+    .quote-mark {
+      font-size: 60px;
+      color: #E91E8C;
+      font-family: Georgia, serif;
+      line-height: 0.5;
+      margin-bottom: 20px;
+    }
+    
+    .testimonial-text {
+      font-size: 18px;
+      color: white;
+      line-height: 1.7;
+      margin-bottom: 30px;
+    }
+    
+    .testimonial-text strong {
+      font-weight: 700;
+    }
+    
+    .attribution {
+      margin-top: auto;
+    }
+    
+    .person-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #E91E8C;
+      margin-bottom: 5px;
+    }
+    
+    .person-role {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.4;
+    }
+    
+    .photo-section {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1;
+    }
+    
+    .person-photo {
+      max-height: 90%;
+      max-width: 100%;
+      object-fit: contain;
+      object-position: bottom;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="slide-photo-testimonial">
+      <!-- Decorative swirls -->
+      <div class="swirl swirl-1"></div>
+      <div class="swirl swirl-2"></div>
+      
+      <!-- Content section -->
+      <div class="content-section">
+        <div class="brand-logo">
+          <div class="main">{{BRAND_NAME}}</div>
+          <div class="sub">POWERED BY {{POWERED_BY}}</div>
+        </div>
+        
+        <span class="quote-mark">"</span>
+        
+        <p class="testimonial-text">{{TESTIMONIAL_TEXT}}</p>
+        
+        <div class="attribution">
+          <div class="person-name">{{PERSON_NAME}}</div>
+          <div class="person-role">{{PERSON_ROLE}}<br>{{PERSON_COMPANY}}</div>
+        </div>
+      </div>
+      
+      <!-- Photo section -->
+      <div class="photo-section">
+        <img class="person-photo" src="{{PHOTO_URL}}" alt="{{PERSON_NAME}}" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
