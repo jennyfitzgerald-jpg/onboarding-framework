@@ -2,7 +2,7 @@
 nixPkgs = ["nodejs-18_x"]
 
 [phases.install]
-cmds = ["cd .cursor/projects/Frameworks && npm ci"]
+cmds = ["npm ci"]
 
 [start]
-cmd = "cd .cursor/projects/Frameworks && node server.js"
+cmd = "node index.js"
