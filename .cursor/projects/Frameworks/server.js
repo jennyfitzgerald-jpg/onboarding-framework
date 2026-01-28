@@ -25,16 +25,11 @@ if (!fs.existsSync(dbDir)) {
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files (but exclude .js files that are server code)
+// Serve static files from current directory (HTML, CSS, JS frontend files)
 app.use(express.static(__dirname, {
-    index: 'index.html',
-    extensions: ['html', 'css', 'js'],
-    setHeaders: (res, path) => {
-        // Don't serve .js files as static if they're in root (they're server files)
-        if (path.endsWith('.js') && !path.includes('/app.js')) {
-            return;
-        }
-    }
+    index: false, // Don't auto-serve index.html, we'll handle it in route
+    dotfiles: 'ignore',
+    extensions: ['html', 'css']
 }));
 
 // Initialize database
@@ -285,19 +280,34 @@ app.get('/api/stats', (req, res) => {
     });
 });
 
-// Serve index.html for root and all routes (SPA support)
+// Serve index.html for root
 app.get('/', (req, res) => {
     try {
         const indexPath = path.join(__dirname, 'index.html');
+        console.log('Serving index.html from:', indexPath);
         if (!fs.existsSync(indexPath)) {
             console.error('index.html not found at:', indexPath);
             return res.status(500).send('index.html not found');
         }
-        res.sendFile(indexPath);
+        res.sendFile(indexPath, (err) => {
+            if (err) {
+                console.error('Error sending index.html:', err);
+                res.status(500).send('Error loading page');
+            }
+        });
     } catch (error) {
         console.error('Error serving index.html:', error);
         res.status(500).send('Error loading page');
     }
+});
+
+// Serve app.js and styles.css as static files
+app.get('/app.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'app.js'), { headers: { 'Content-Type': 'application/javascript' } });
+});
+
+app.get('/styles.css', (req, res) => {
+    res.sendFile(path.join(__dirname, 'styles.css'), { headers: { 'Content-Type': 'text/css' } });
 });
 
 // Health check endpoint
