@@ -1,2 +1,2 @@
-web: node server.js
-release: npm run seed || true
+web: cd .cursor/projects/Frameworks && node server.js
+release: cd .cursor/projects/Frameworks && npm run seed || true
