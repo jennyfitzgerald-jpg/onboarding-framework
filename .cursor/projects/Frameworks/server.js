@@ -255,9 +255,14 @@ app.get('/api/stats', (req, res) => {
     });
 });
 
-// Serve index.html for root
+// Serve index.html for root and all routes (SPA support)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Start server
