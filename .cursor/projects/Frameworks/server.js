@@ -9,9 +9,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_PATH = path.join(__dirname, 'database.sqlite');
 
+console.log('Starting server...');
+console.log('PORT:', PORT);
+console.log('DB_PATH:', DB_PATH);
+console.log('__dirname:', __dirname);
+
 // Ensure database directory exists (for cloud deployments)
 const dbDir = path.dirname(DB_PATH);
 if (!fs.existsSync(dbDir)) {
+    console.log('Creating database directory:', dbDir);
     fs.mkdirSync(dbDir, { recursive: true });
 }
 
@@ -21,14 +27,23 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
 // Initialize database
-const db = new sqlite3.Database(DB_PATH, (err) => {
-    if (err) {
-        console.error('Error opening database:', err.message);
-    } else {
-        console.log('Connected to SQLite database');
-        initializeDatabase();
-    }
-});
+console.log('Initializing database...');
+let db;
+try {
+    db = new sqlite3.Database(DB_PATH, (err) => {
+        if (err) {
+            console.error('Error opening database:', err.message);
+            console.error('Stack:', err.stack);
+        } else {
+            console.log('Connected to SQLite database');
+            initializeDatabase();
+        }
+    });
+} catch (error) {
+    console.error('Error creating database connection:', error.message);
+    console.error('Stack:', error.stack);
+    process.exit(1);
+}
 
 // Initialize database schema
 function initializeDatabase() {
