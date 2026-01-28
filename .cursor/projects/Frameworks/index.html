@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Onboarding Framework</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Staff Onboarding Framework</h1>
+            <p class="subtitle">Track progress, assign leaders, and communicate what's been done</p>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="shareBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    Share Progress
+                </button>
+                <button class="btn btn-primary" id="addStepBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Step
+                </button>
+            </div>
+        </header>
+
+        <div class="progress-bar-container">
+            <div class="progress-info">
+                <span class="progress-text">Overall Progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="framework-container" id="frameworkContainer">
+            <!-- Steps will be dynamically added here -->
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+            <h2>No steps yet</h2>
+            <p>Click "Add Step" to create your first onboarding step</p>
+        </div>
+    </div>
+
+    <!-- Add Step Modal -->
+    <div class="modal" id="addStepModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Step</h2>
+                <button class="modal-close" id="closeAddModal">&times;</button>
+            </div>
+            <form id="addStepForm">
+                <div class="form-group">
+                    <label for="stepTitle">Step Title *</label>
+                    <input type="text" id="stepTitle" required placeholder="e.g., Complete HR paperwork">
+                </div>
+                <div class="form-group">
+                    <label for="stepDescription">Description</label>
+                    <textarea id="stepDescription" rows="3" placeholder="What needs to be done in this step?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="stepLeader">Assigned Leader</label>
+                    <input type="text" id="stepLeader" placeholder="Enter name of person leading this step">
+                </div>
+                <div class="form-group">
+                    <label for="stepCategory">Category</label>
+                    <select id="stepCategory">
+                        <option value="preparation">Preparation</option>
+                        <option value="training">Training</option>
+                        <option value="documentation">Documentation</option>
+                        <option value="integration">Integration</option>
+                        <option value="review">Review</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddStep">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Step</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Step Modal -->
+    <div class="modal" id="editStepModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Step</h2>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <form id="editStepForm">
+                <input type="hidden" id="editStepId">
+                <div class="form-group">
+                    <label for="editStepTitle">Step Title *</label>
+                    <input type="text" id="editStepTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editStepDescription">Description</label>
+                    <textarea id="editStepDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editStepLeader">Assigned Leader</label>
+                    <input type="text" id="editStepLeader" placeholder="Enter name of person leading this step">
+                </div>
+                <div class="form-group">
+                    <label for="editStepCategory">Category</label>
+                    <select id="editStepCategory">
+                        <option value="preparation">Preparation</option>
+                        <option value="training">Training</option>
+                        <option value="documentation">Documentation</option>
+                        <option value="integration">Integration</option>
+                        <option value="review">Review</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="editStepCompleted">
+                        <span>Mark as completed</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEditStep">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Share Progress</h2>
+                <button class="modal-close" id="closeShareModal">&times;</button>
+            </div>
+            <div class="share-content">
+                <p>Share this link with your team to view the current onboarding progress:</p>
+                <div class="share-input-group">
+                    <input type="text" id="shareUrl" readonly>
+                    <button class="btn btn-primary" id="copyUrlBtn">Copy</button>
+                </div>
+                <div class="share-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="totalSteps">0</span>
+                        <span class="stat-label">Total Steps</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="completedSteps">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="pendingSteps">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

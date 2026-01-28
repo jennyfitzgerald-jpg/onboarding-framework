@@ -1,0 +1,368 @@
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const DB_PATH = path.join(__dirname, 'database.sqlite');
+const db = new sqlite3.Database(DB_PATH);
+
+// Default onboarding framework steps
+// You can customize these based on your actual framework
+const defaultSteps = [
+    {
+        title: "New chatSearchChatsProjectsArtifactsCodeRecentsHideAdding accountability metrics back to presentationDiagnexia analytix software testing and bug reportingFinding Google Chat call recordingsHistology s",
+        description: "",
+        category: "other",
+        step_order: 1
+    },
+    {
+        title: "New chatSearchChatsProjectsArtifactsCodeRecentsHideAdding accountability metrics back to presentationDiagnexia analytix software testing and bug reportingFinding Google Chat call recordingsHistology s",
+        description: "ChatsProjectsArtifactsCode",
+        category: "other",
+        step_order: 2
+    },
+    {
+        title: "Comprehensive client onboarding framework and Gantt chartSharepdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "",
+        category: "other",
+        step_order: 3
+    },
+    {
+        title: "Comprehensive client onboarding framework and Gantt chartSharepdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "",
+        category: "other",
+        step_order: 4
+    },
+    {
+        title: "Comprehensive client onboarding framework and Gantt chartSharepdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "Comprehensive client onboarding framework and Gantt chartShare",
+        category: "other",
+        step_order: 5
+    },
+    {
+        title: "pdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "",
+        category: "other",
+        step_order: 6
+    },
+    {
+        title: "pdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "",
+        category: "other",
+        step_order: 7
+    },
+    {
+        title: "pdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "",
+        category: "other",
+        step_order: 8
+    },
+    {
+        title: "pdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!",
+        description: "pdfI need to build the diagnexia scalable low touch playbook and onboarding framework- who hold sthe baton at what point!\n\nThe business develoipment managers- enagge the client- scout the market landscope etc own the revneue coming in from each site, strategic sales support and SME- is Mike lamgford",
+        category: "other",
+        step_order: 9
+    },
+    {
+        title: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11sJenny is asking me to help her build a comprehensive onboarding framework and Gantt chart for Diag",
+        description: "",
+        category: "other",
+        step_order: 10
+    },
+    {
+        title: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11sJenny is asking me to help her build a comprehensive onboarding framework and Gantt chart for Diag",
+        description: "",
+        category: "other",
+        step_order: 11
+    },
+    {
+        title: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11sJenny is asking me to help her build a comprehensive onboarding framework and Gantt chart for Diag",
+        description: "",
+        category: "other",
+        step_order: 12
+    },
+    {
+        title: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11sJenny is asking me to help her build a comprehensive onboarding framework and Gantt chart for Diag",
+        description: "",
+        category: "other",
+        step_order: 13
+    },
+    {
+        title: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11sJenny is asking me to help her build a comprehensive onboarding framework and Gantt chart for Diag",
+        description: "Architected comprehensive onboarding framework with tiered Gantt charts and vulnerability tracking.11s",
+        category: "other",
+        step_order: 14
+    },
+    {
+        title: "Jenny, I can see the gaps in what ChatGPT produced - it's surface-level with no real operational depth. Let me build you something properly comprehensive.",
+        description: "",
+        category: "other",
+        step_order: 15
+    },
+    {
+        title: "Jenny, I can see the gaps in what ChatGPT produced - it's surface-level with no real operational depth. Let me build you something properly comprehensive.",
+        description: "Jenny, I can see the gaps in what ChatGPT produced - it's surface-level with no real operational depth. Let me build you something properly comprehensive.",
+        category: "other",
+        step_order: 16
+    },
+    {
+        title: "Architected tiered onboarding framework with health checks and clear ownership handoffs.Jenny wants me to build a comprehensive onboarding framework with:",
+        description: "",
+        category: "other",
+        step_order: 17
+    },
+    {
+        title: "Architected tiered onboarding framework with health checks and clear ownership handoffs.Jenny wants me to build a comprehensive onboarding framework with:",
+        description: "",
+        category: "other",
+        step_order: 18
+    },
+    {
+        title: "Architected tiered onboarding framework with health checks and clear ownership handoffs.Jenny wants me to build a comprehensive onboarding framework with:",
+        description: "",
+        category: "other",
+        step_order: 19
+    },
+    {
+        title: "Architected tiered onboarding framework with health checks and clear ownership handoffs.Jenny wants me to build a comprehensive onboarding framework with:",
+        description: "",
+        category: "other",
+        step_order: 20
+    },
+    {
+        title: "Architected tiered onboarding framework with health checks and clear ownership handoffs.Jenny wants me to build a comprehensive onboarding framework with:",
+        description: "Architected tiered onboarding framework with health checks and clear ownership handoffs.",
+        category: "other",
+        step_order: 21
+    },
+    {
+        title: "I've built you a comprehensive interactive playbook. Let me walk you through what's now included:",
+        description: "",
+        category: "other",
+        step_order: 22
+    },
+    {
+        title: "I've built you a comprehensive interactive playbook. Let me walk you through what's now included:",
+        description: "I've built you a comprehensive interactive playbook. Let me walk you through what's now included:",
+        category: "other",
+        step_order: 23
+    },
+    {
+        title: "1. Three-Tier Classification with clear criteria - Strategic (NWLP-type networks, >£500k), Standard (typical single-site), and Low-Touch (digital-only plug-and-play)",
+        description: "",
+        category: "other",
+        step_order: 24
+    },
+    {
+        title: "1. Three-Tier Classification",
+        description: "2. 12-Step Framework with proper operational depth for each step showing actual activities (not just headers), who does what, what gets produced, and the explicit handoff mechanism",
+        category: "other",
+        step_order: 25
+    },
+    {
+        title: "3. Integration involvement from Day 1 - they're notified immediately via Chat Space after the first BDM call, then join the Technical Scoping Call before contracting",
+        description: "",
+        category: "other",
+        step_order: 26
+    },
+    {
+        title: "3. Integration involvement from Day 1",
+        description: "",
+        category: "other",
+        step_order: 27
+    },
+    {
+        title: "4. Clear baton ownership - BDM hands off to CS after Step 4 and becomes an advocate only. Customer Service owns 95% of the lifecycle as you wanted",
+        description: "",
+        category: "other",
+        step_order: 28
+    },
+    {
+        title: "4. Clear baton ownership",
+        description: "",
+        category: "other",
+        step_order: 29
+    },
+    {
+        title: "5. Gantt chart that adjusts by tier - Strategic runs 8-12 weeks, Standard 4-6 weeks, Low-Touch 2-3 weeks",
+        description: "",
+        category: "other",
+        step_order: 30
+    },
+    {
+        title: "5. Gantt chart",
+        description: "",
+        category: "other",
+        step_order: 31
+    },
+    {
+        title: "6. Health Checks at Day 30/60/90 with weighted scoring criteria and explicit escalation paths (30 → SX Lead, 60 → Mike, 90 → You)",
+        description: "",
+        category: "other",
+        step_order: 32
+    },
+    {
+        title: "6. Health Checks at Day 30/60/90",
+        description: "",
+        category: "other",
+        step_order: 33
+    },
+    {
+        title: "7. Full RACI matrix showing exactly who is Responsible, Accountable, Consulted, and Informed at each step",
+        description: "",
+        category: "other",
+        step_order: 34
+    },
+    {
+        title: "7. Full RACI matrix",
+        description: "",
+        category: "other",
+        step_order: 35
+    },
+    {
+        title: "8. Chat Space membership explicitly listed for Step 4 when it gets created",
+        description: "",
+        category: "other",
+        step_order: 36
+    },
+    {
+        title: "8. Chat Space membership",
+        description: "A few things to refine:",
+        category: "other",
+        step_order: 37
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "",
+        category: "other",
+        step_order: 38
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "",
+        category: "other",
+        step_order: 39
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "",
+        category: "other",
+        step_order: 40
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "",
+        category: "other",
+        step_order: 41
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "",
+        category: "other",
+        step_order: 42
+    },
+    {
+        title: "Architected granular, interactive playbook spanning eight implementation phases.28sJenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. Thi",
+        description: "Architected granular, interactive playbook spanning eight implementation phases.28s",
+        category: "other",
+        step_order: 43
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "",
+        category: "other",
+        step_order: 44
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "",
+        category: "other",
+        step_order: 45
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "",
+        category: "other",
+        step_order: 46
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "",
+        category: "other",
+        step_order: 47
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "",
+        category: "other",
+        step_order: 48
+    },
+    {
+        title: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual inst",
+        description: "Jenny wants me to build a detailed, step-by-step operational playbook specifically for the Customer Service team. This needs to be very granular and actionable - not high-level headers but actual instructions like:",
+        category: "other",
+        step_order: 49
+    },
+    {
+        title: "Phase 1: Handover from BDM (Step 4 in main framework)",
+        description: "",
+        category: "other",
+        step_order: 50
+    },
+    {
+        title: "Phase 1: Handover from BDM (Step 4 in main framework)",
+        description: "Receive notification in Chat Space that contract is signed",
+        category: "other",
+        step_order: 51
+    },
+    {
+        title: "Phase 2: Welcome & Pre-Onboarding (Step 5)",
+        description: "",
+        category: "other",
+        step_order: 52
+    },
+    {
+        title: "Phase 2: Welcome & Pre-Onboarding (Step 5)",
+        description: "Schedule Welcome Call with customer\nOn the call:\n\nIntroduce yourself and your role\nExplain the onboarding journey\nSet expectations on timeline\nConfirm key contacts at customer side\nExplain what you need from them (homework)\n\n\nSend Welcome Pack email with:\n\nSNOMED Code Template\nIHC & Special Stains T",
+        category: "other",
+        step_order: 53
+    }
+];
+
+db.serialize(() => {
+    // Clear existing steps
+    db.run('DELETE FROM steps', (err) => {
+        if (err) {
+            console.error('Error clearing steps:', err.message);
+            return;
+        }
+        console.log('Cleared existing steps');
+    });
+
+    // Insert default steps
+    const stmt = db.prepare(`
+        INSERT INTO steps (id, title, description, leader, category, completed, created_at, step_order)
+        VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+    `);
+
+    defaultSteps.forEach((step, index) => {
+        const id = `step-${Date.now()}-${index}`;
+        const now = new Date().toISOString();
+        stmt.run(
+            id,
+            step.title,
+            step.description,
+            null, // leader - to be assigned
+            step.category,
+            now,
+            step.step_order
+        );
+    });
+
+    stmt.finalize((err) => {
+        if (err) {
+            console.error('Error seeding database:', err.message);
+        } else {
+            console.log(`Successfully seeded ${defaultSteps.length} steps`);
+        }
+        db.close();
+    });
+});
