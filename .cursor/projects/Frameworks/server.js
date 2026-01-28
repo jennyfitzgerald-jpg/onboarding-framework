@@ -12,34 +12,18 @@ const DB_PATH = path.join(__dirname, 'database.sqlite');
 console.log('Starting server...');
 console.log('PORT:', PORT);
 console.log('DB_PATH:', DB_PATH);
-console.log('__dirname:', __dirname);
-
-// Ensure database directory exists (for cloud deployments)
-const dbDir = path.dirname(DB_PATH);
-if (!fs.existsSync(dbDir)) {
-    console.log('Creating database directory:', dbDir);
-    fs.mkdirSync(dbDir, { recursive: true });
-}
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-
-// Serve static files from current directory (HTML, CSS, JS frontend files)
-app.use(express.static(__dirname, {
-    index: false, // Don't auto-serve index.html, we'll handle it in route
-    dotfiles: 'ignore',
-    extensions: ['html', 'css']
-}));
+app.use(express.static(__dirname, { index: false, dotfiles: 'ignore' }));
 
 // Initialize database
-console.log('Initializing database...');
 let db;
 try {
     db = new sqlite3.Database(DB_PATH, (err) => {
         if (err) {
             console.error('Error opening database:', err.message);
-            console.error('Stack:', err.stack);
         } else {
             console.log('Connected to SQLite database');
             initializeDatabase();
@@ -47,638 +31,355 @@ try {
     });
 } catch (error) {
     console.error('Error creating database connection:', error.message);
-    console.error('Stack:', error.stack);
     process.exit(1);
 }
 
 // Initialize database schema
 function initializeDatabase() {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS steps (
-            id TEXT PRIMARY KEY,
-            title TEXT NOT NULL,
-            description TEXT,
-            leader TEXT,
-            category TEXT DEFAULT 'other',
-            completed INTEGER DEFAULT 0,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            updated_at TEXT,
-            completed_at TEXT,
-            step_order INTEGER DEFAULT 0
-        )
-    `, (err) => {
-        if (err) {
-            console.error('Error creating table:', err.message);
-        } else {
-            console.log('Database initialized');
-            // Check if we need to seed
-            db.get('SELECT COUNT(*) as count FROM steps', (err, row) => {
-                if (!err && row.count === 0) {
-                    console.log('Database is empty, auto-seeding with framework...');
-                    seedDefaultFramework();
-                }
-            });
-        }
+    db.serialize(() => {
+        // Clients table
+        db.run(`
+            CREATE TABLE IF NOT EXISTS clients (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                tier TEXT DEFAULT 'standard',
+                bdm_name TEXT,
+                contract_date TEXT,
+                go_live_date TEXT,
+                current_stage INTEGER DEFAULT 1,
+                status TEXT DEFAULT 'active',
+                health_score INTEGER DEFAULT 100,
+                notes TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT
+            )
+        `);
+
+        // Template steps (master framework)
+        db.run(`
+            CREATE TABLE IF NOT EXISTS template_steps (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                step_order INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                default_owner TEXT,
+                category TEXT DEFAULT 'other',
+                duration_days INTEGER DEFAULT 5
+            )
+        `);
+
+        // Client steps (per-client progress)
+        db.run(`
+            CREATE TABLE IF NOT EXISTS client_steps (
+                id TEXT PRIMARY KEY,
+                client_id TEXT NOT NULL,
+                step_order INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                assigned_person TEXT,
+                default_owner TEXT,
+                category TEXT DEFAULT 'other',
+                status TEXT DEFAULT 'pending',
+                notes TEXT,
+                started_at TEXT,
+                completed_at TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (client_id) REFERENCES clients(id)
+            )
+        `);
+
+        // Activity log
+        db.run(`
+            CREATE TABLE IF NOT EXISTS activity_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                client_id TEXT NOT NULL,
+                step_order INTEGER,
+                action TEXT NOT NULL,
+                details TEXT,
+                performed_by TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (client_id) REFERENCES clients(id)
+            )
+        `);
+
+        // Check if template needs seeding
+        db.get('SELECT COUNT(*) as count FROM template_steps', (err, row) => {
+            if (!err && row.count === 0) {
+                console.log('Seeding template steps...');
+                seedTemplateSteps();
+            }
+        });
     });
 }
 
-// Auto-seed the database with the Diagnexia Onboarding Framework
-function seedDefaultFramework() {
-    const defaultSteps = [
-        {
-            title: "1. BDM Discovery & Qualification",
-            description: `BATON HOLDER: BDM (Commercial)
-CONTRIBUTORS: Sales Support, Mike Langford (SME), Legal
-
-WHAT HAPPENS:
-• BDM scouts market, lands the account, owns the revenue line
-• Complete Client Onboarding Handover sections 1-2
-• Flag expected integration needs early
-• Integration team notified via Chat Space IMMEDIATELY after first call
-
-DELIVERABLES:
-□ Client Handover Document (Sections 1-2)
-□ Integration flagged (Yes/No)
-□ Tier Classification: Strategic / Standard / Low-Touch
-□ Chat Space notification sent to Integration
-
-⚠️ BDM role is CLIENT ADVOCATE only`,
-            leader: "BDM (Commercial)",
-            category: "discovery",
-            step_order: 1
-        },
-        {
-            title: "2. Technical Scoping Call",
-            description: `BATON HOLDER: BDM + Integration Team
-CONTRIBUTORS: Automation Team, IT Security
-
-WHAT HAPPENS:
-• Integration team joins follow-up scoping call
-• Map LIS/LIMS architecture, endpoints, routing
-• Identify automation/scanner workflows
-• Security and compliance requirements captured
-
-DELIVERABLES:
-□ Integration Requirements Document
-□ Technical Feasibility Assessment
-□ Integration Complexity Rating
-□ Estimated integration timeline`,
-            leader: "Integration Team",
-            category: "discovery",
-            step_order: 2
-        },
-        {
-            title: "3. Contracting & Internal Trigger",
-            description: `BATON HOLDER: Legal (Maninder / Danniella)
-CONTRIBUTORS: Finance, BDM, Service Excellence
-
-WHAT HAPPENS:
-• Legal finalizes NDAs, MSAs, SLAs, pricing schedules
-• Finance validates commercial terms
-• Once signed, Legal triggers official onboarding via Chat Space
-
-DELIVERABLES:
-□ Signed NDA
-□ Signed MSA/Contract
-□ SLA Agreement
-□ "Contract Signed" notification
-
-⚠️ NO implementation work starts before contract signature`,
-            leader: "Legal",
-            category: "documentation",
-            step_order: 3
-        },
-        {
-            title: "4. Handover & Chat Space Setup",
-            description: `BATON HOLDER: Customer Service / Service Excellence
-OVERSEEN BY: Mike Langford
-
-WHAT HAPPENS:
-• CS receives notification that contract is signed
-• Create dedicated client Chat Space with ALL stakeholders
-• Assign Implementation Lead
-• Confirm tier classification and timeline
-
-DELIVERABLES:
-□ Chat Space created with all key members
-□ Implementation Lead assigned
-□ Timeline confirmed (Strategic: 8-12wks, Standard: 4-6wks, Low-Touch: 2-3wks)
-
-🎯 FROM THIS POINT: Customer Service owns 95% of lifecycle`,
-            leader: "Customer Service Lead",
-            category: "preparation",
-            step_order: 4
-        },
-        {
-            title: "5. Welcome Call & Pack",
-            description: `BATON HOLDER: CS Implementation Lead
-
-WELCOME CALL:
-• Introduce yourself as single point of contact
-• Explain onboarding journey
-• Set timeline expectations
-• Explain homework requirements
-
-WELCOME PACK (send same day):
-□ IHC & Special Stains Template
-□ SNOMED Code Template
-□ Reporting Proforma Request
-□ Manifest Templates
-□ Shipping Instructions
-□ Portal User Access Form
-□ Portal Manual`,
-            leader: "CS Implementation Lead",
-            category: "engagement",
-            step_order: 5
-        },
-        {
-            title: "6. Homework Collection & Validation",
-            description: `BATON HOLDER: CS Implementation Lead
-
-COLLECT & HAND OFF:
-□ SNOMED Code Template → Automation Team
-□ IHC & Special Stains Template → Automation Team
-□ Reporting Proforma → Path Management
-□ Manifest Templates → Validate format
-□ Portal User Access Form → Collect all users
-□ Shipping info → Lab Ops
-
-CHASE SEQUENCE:
-• Day 3: Friendly reminder
-• Day 5: Chase call
-• Day 7: Escalate to BDM`,
-            leader: "CS Implementation Lead",
-            category: "documentation",
-            step_order: 6
-        },
-        {
-            title: "7. Questionnaire Workshop",
-            description: `BATON HOLDER: CS Implementation Lead
-CONTRIBUTORS: Integration, Automation, Path Mgmt, Case Control, Lab Ops
-
-WORKSHOP AGENDA (90 mins):
-• SNOMED mapping walkthrough
-• Integration requirements deep-dive
-• Reporting/routing requirements
-• Logistics and shipping
-
-POST-WORKSHOP:
-• CS creates Service Design Document draft within 48hrs
-• All teams update their trackers`,
-            leader: "CS Implementation Lead",
-            category: "integration",
-            step_order: 7
-        },
-        {
-            title: "8. Internal Feasibility & Alignment",
-            description: `BATON HOLDER: Service Excellence Lead
-
-INTERNAL REVIEW:
-□ SNOMED mapping feasibility (Automation)
-□ Reporting compatibility (Path Mgmt)
-□ Integration capacity (Integration)
-□ Compliance cleared (QA/Regulatory)
-□ Pathologist coverage confirmed
-□ Lab capacity validated
-
-DELIVERABLE:
-□ Feasibility Sign-Off from all teams
-□ Final Service Design Document
-
-This step prevents "surprises" at go-live`,
-            leader: "Service Excellence Lead",
-            category: "review",
-            step_order: 8
-        },
-        {
-            title: "9. Design Playback & Customer Approval",
-            description: `BATON HOLDER: CS Implementation Lead
-
-PRESENT:
-• Portal access and usage
-• Manifest/submission workflow
-• Case routing logic
-• Reporting pathway
-• On-hold rules
-• TAT commitments
-
-SIGN-OFF REQUIRED:
-□ Customer verbally approves
-□ Confirmation email sent
-□ Go-live date locked
-
-⚠️ Changes loop back to Step 8`,
-            leader: "CS Implementation Lead",
-            category: "review",
-            step_order: 9
-        },
-        {
-            title: "10. Build Phase",
-            description: `BATON HOLDER: Integration + Automation Teams
-CO-ORDINATED BY: CS Implementation Lead
-
-BUILD:
-□ Portal users created
-□ Integration configured
-□ Automation setup
-□ SNOMED mapping applied
-□ Reporting templates loaded
-□ Routing rules configured
-
-Timeline: Strategic 2-3wks, Standard 1-2wks, Low-Touch 3-5 days`,
-            leader: "Integration + Automation",
-            category: "integration",
-            step_order: 10
-        },
-        {
-            title: "11. Training & Dry Run",
-            description: `BATON HOLDER: CS Implementation Lead
-
-TRAINING:
-□ Portal navigation
-□ Case submission
-□ Manifest generation
-□ Report access
-□ On-hold handling
-□ Escalation process
-
-DRY RUN:
-□ Create test case end-to-end
-□ Verify routing logic
-□ Test on-hold triggers
-□ Validate manifest generation`,
-            leader: "CS Implementation Lead",
-            category: "training",
-            step_order: 11
-        },
-        {
-            title: "12. Go-Live & Hypercare",
-            description: `BATON HOLDER: CS Implementation Lead
-
-GO-LIVE DAY:
-□ Activate service
-□ Confirm first submission
-□ Monitor first cases
-□ Immediate issue triage
-
-HYPERCARE (2 weeks):
-□ Daily customer check-ins
-□ Daily internal stand-ups
-□ Rapid issue resolution (4hr SLA)
-
-ESCALATION:
-4hrs unresolved → Service Excellence Lead
-24hrs unresolved → Mike Langford`,
-            leader: "CS Implementation Lead",
-            category: "go-live",
-            step_order: 12
-        },
-        {
-            title: "13. Day 30 Health Check",
-            description: `BATON HOLDER: CS Account Owner
-ESCALATION TO: Service Excellence Lead
-
-SCORING (100 points):
-□ Case Volume vs Expected (20 pts)
-□ TAT Performance (20 pts)
-□ On-Hold Rate (15 pts)
-□ Customer Responsiveness (15 pts)
-□ Issue Frequency (15 pts)
-□ Relationship Temperature (15 pts)
-
-80-100: Healthy
-60-79: Watch - Weekly check-ins
-Below 60: At Risk - Escalate`,
-            leader: "CS Account Owner",
-            category: "health-check",
-            step_order: 13
-        },
-        {
-            title: "14. Day 60 Health Check",
-            description: `BATON HOLDER: CS Account Owner
-ESCALATION TO: Mike Langford
-
-Same scoring criteria as Day 30.
-
-ESCALATE TO MIKE IF:
-• Score dropped from Day 30
-• Score remains below 60
-• Customer dissatisfied
-• Volume below projection
-
-MIKE'S INVOLVEMENT:
-• Executive sponsor call
-• Resource reallocation
-• Strategic intervention`,
-            leader: "CS Account Owner",
-            category: "health-check",
-            step_order: 14
-        },
-        {
-            title: "15. Day 90 Health Check & BAU",
-            description: `BATON HOLDER: CS Account Owner
-ESCALATION TO: Jenny (if critical)
-
-80-100: Full BAU transition
-60-79: Extended Watch (+30 days)
-Below 60: Critical - Executive intervention
-
-BAU TRANSITION:
-□ Steady-state cadence set
-□ KPI reporting automated
-□ Feedback loops in place
-□ NPS survey scheduled
-□ Account in review cycle
-
-ONGOING:
-• CS: Day-to-day relationship
-• BDM: Commercial, upsell
-• SX: Quarterly reviews`,
-            leader: "CS Account Owner",
-            category: "health-check",
-            step_order: 15
-        }
+// Seed the master template
+function seedTemplateSteps() {
+    const steps = [
+        { order: 1, title: "BDM Discovery & Qualification", owner: "BDM (Commercial)", category: "discovery", duration: 5,
+          description: `BATON HOLDER: BDM (Commercial)\n\n• Scout market, land the account, own revenue line\n• Complete Client Handover sections 1-2\n• Flag integration needs early\n• Notify Integration via Chat Space IMMEDIATELY\n\nDELIVERABLES:\n□ Client Handover Document\n□ Integration flagged (Yes/No)\n□ Tier Classification\n□ Chat Space notification sent` },
+        { order: 2, title: "Technical Scoping Call", owner: "Integration Team", category: "discovery", duration: 5,
+          description: `BATON HOLDER: Integration Team\n\n• Integration joins scoping call\n• Map LIS/LIMS architecture\n• Identify automation workflows\n• Capture security requirements\n\nDELIVERABLES:\n□ Integration Requirements Doc\n□ Technical Feasibility Assessment\n□ Complexity Rating\n□ Timeline estimate` },
+        { order: 3, title: "Contracting & Internal Trigger", owner: "Legal", category: "documentation", duration: 10,
+          description: `BATON HOLDER: Legal\n\n• Finalize NDAs, MSAs, SLAs\n• Finance validates terms\n• Trigger onboarding via Chat Space\n\nDELIVERABLES:\n□ Signed NDA\n□ Signed Contract\n□ SLA Agreement\n□ "Contract Signed" notification\n\n⚠️ NO work before contract signature` },
+        { order: 4, title: "Handover & Chat Space Setup", owner: "Customer Service Lead", category: "preparation", duration: 2,
+          description: `BATON HOLDER: Customer Service Lead\n\n• Create client Chat Space with ALL stakeholders\n• Assign Implementation Lead\n• Confirm tier and timeline\n\nDELIVERABLES:\n□ Chat Space created\n□ Implementation Lead assigned\n□ Timeline confirmed\n\n🎯 CS owns 95% of lifecycle from here` },
+        { order: 5, title: "Welcome Call & Pack", owner: "CS Implementation Lead", category: "engagement", duration: 2,
+          description: `BATON HOLDER: CS Implementation Lead\n\nWELCOME CALL:\n• Introduce as single point of contact\n• Explain onboarding journey\n• Set timeline expectations\n\nWELCOME PACK:\n□ IHC & Special Stains Template\n□ SNOMED Code Template\n□ Reporting Proforma\n□ Manifest Templates\n□ Portal Access Form` },
+        { order: 6, title: "Homework Collection & Validation", owner: "CS Implementation Lead", category: "documentation", duration: 7,
+          description: `BATON HOLDER: CS Implementation Lead\n\nCOLLECT & HAND OFF:\n□ SNOMED Template → Automation\n□ IHC Template → Automation\n□ Reporting Proforma → Path Mgmt\n□ Portal Access Form → Tech Support\n□ Shipping info → Lab Ops\n\nCHASE: Day 3 reminder, Day 5 call, Day 7 escalate` },
+        { order: 7, title: "Questionnaire Workshop", owner: "CS Implementation Lead", category: "integration", duration: 3,
+          description: `BATON HOLDER: CS Implementation Lead\n\nWORKSHOP (90 mins):\n• SNOMED mapping walkthrough\n• Integration deep-dive\n• Reporting/routing requirements\n• Logistics confirmation\n\nPOST-WORKSHOP:\n• Service Design Document within 48hrs\n• All teams update trackers` },
+        { order: 8, title: "Internal Feasibility & Alignment", owner: "Service Excellence Lead", category: "review", duration: 5,
+          description: `BATON HOLDER: Service Excellence Lead\n\nINTERNAL REVIEW:\n□ SNOMED feasibility (Automation)\n□ Reporting compatibility (Path Mgmt)\n□ Integration capacity\n□ Compliance cleared\n□ Pathologist coverage\n□ Lab capacity\n\nDELIVERABLE:\n□ Feasibility Sign-Off\n□ Final Service Design` },
+        { order: 9, title: "Design Playback & Customer Approval", owner: "CS Implementation Lead", category: "review", duration: 2,
+          description: `BATON HOLDER: CS Implementation Lead\n\nPRESENT:\n• Portal access & usage\n• Manifest workflow\n• Case routing logic\n• Reporting pathway\n• TAT commitments\n\nSIGN-OFF:\n□ Customer approves\n□ Confirmation email sent\n□ Go-live date locked` },
+        { order: 10, title: "Build Phase", owner: "Integration + Automation", category: "integration", duration: 14,
+          description: `BATON HOLDER: Integration + Automation\n\nBUILD:\n□ Portal users created\n□ Integration configured\n□ Automation setup\n□ SNOMED mapping applied\n□ Reporting templates loaded\n□ Routing rules configured\n\nTimeline: Strategic 2-3wks, Standard 1-2wks` },
+        { order: 11, title: "Training & Dry Run", owner: "CS Implementation Lead", category: "training", duration: 3,
+          description: `BATON HOLDER: CS Implementation Lead\n\nTRAINING:\n□ Portal navigation\n□ Case submission\n□ Manifest generation\n□ Report access\n\nDRY RUN:\n□ Test case end-to-end\n□ Verify routing\n□ Test on-hold triggers\n□ Validate manifests` },
+        { order: 12, title: "Go-Live & Hypercare", owner: "CS Implementation Lead", category: "go-live", duration: 14,
+          description: `BATON HOLDER: CS Implementation Lead\n\nGO-LIVE:\n□ Activate service\n□ Confirm first submission\n□ Monitor first cases\n\nHYPERCARE (2 weeks):\n□ Daily customer check-ins\n□ Daily internal stand-ups\n□ 4hr SLA issue resolution\n\nESCALATION: 4hrs → SX Lead, 24hrs → Mike` },
+        { order: 13, title: "Day 30 Health Check", owner: "CS Account Owner", category: "health-check", duration: 1,
+          description: `BATON HOLDER: CS Account Owner\nESCALATE TO: Service Excellence Lead\n\nSCORING (100 pts):\n□ Volume vs Expected (20)\n□ TAT Performance (20)\n□ On-Hold Rate (15)\n□ Customer Response (15)\n□ Issue Frequency (15)\n□ Relationship Temp (15)\n\n80-100: Healthy | 60-79: Watch | <60: At Risk` },
+        { order: 14, title: "Day 60 Health Check", owner: "CS Account Owner", category: "health-check", duration: 1,
+          description: `BATON HOLDER: CS Account Owner\nESCALATE TO: Mike Langford\n\nSame scoring as Day 30.\n\nESCALATE IF:\n• Score dropped\n• Score <60\n• Customer dissatisfied\n• Volume below projection\n\nMIKE: Executive call, resource reallocation` },
+        { order: 15, title: "Day 90 Health Check & BAU", owner: "CS Account Owner", category: "health-check", duration: 1,
+          description: `BATON HOLDER: CS Account Owner\nESCALATE TO: Jenny (if critical)\n\n80-100: Full BAU\n60-79: Extended Watch\n<60: Executive intervention\n\nBAU TRANSITION:\n□ Cadence set\n□ KPI reporting automated\n□ Feedback loops\n□ NPS scheduled\n□ In review cycle` }
     ];
 
-    const stmt = db.prepare(`
-        INSERT INTO steps (id, title, description, leader, category, completed, created_at, step_order)
-        VALUES (?, ?, ?, ?, ?, 0, ?, ?)
-    `);
+    const stmt = db.prepare(`INSERT INTO template_steps (step_order, title, description, default_owner, category, duration_days) VALUES (?, ?, ?, ?, ?, ?)`);
+    steps.forEach(s => stmt.run(s.order, s.title, s.description, s.owner, s.category, s.duration));
+    stmt.finalize(() => console.log('Template steps seeded'));
+}
 
-    defaultSteps.forEach((step, index) => {
-        const id = `step-${Date.now()}-${index}`;
-        const now = new Date().toISOString();
-        stmt.run(id, step.title, step.description, step.leader, step.category, now, step.step_order);
-    });
-
-    stmt.finalize((err) => {
-        if (err) {
-            console.error('Error seeding database:', err.message);
-        } else {
-            console.log(`Auto-seeded ${defaultSteps.length} onboarding steps`);
-        }
+// Create client steps from template
+function createClientSteps(clientId, callback) {
+    db.all('SELECT * FROM template_steps ORDER BY step_order', (err, templates) => {
+        if (err) return callback(err);
+        
+        const stmt = db.prepare(`INSERT INTO client_steps (id, client_id, step_order, title, description, default_owner, category, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`);
+        templates.forEach(t => {
+            const id = `${clientId}-step-${t.step_order}`;
+            stmt.run(id, clientId, t.step_order, t.title, t.description, t.default_owner, t.category);
+        });
+        stmt.finalize(callback);
     });
 }
 
-// API Routes
+// ============ API ROUTES ============
 
-// Get all steps
-app.get('/api/steps', (req, res) => {
-    if (!db) {
-        return res.status(500).json({ error: 'Database not initialized' });
-    }
-    db.all('SELECT * FROM steps ORDER BY step_order ASC, created_at ASC', (err, rows) => {
-        if (err) {
-            console.error('Error fetching steps:', err);
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        // Convert completed integer to boolean
-        const steps = rows.map(row => ({
-            ...row,
-            completed: row.completed === 1
-        }));
-        res.json(steps);
+// --- CLIENTS ---
+
+// Get all clients with progress summary
+app.get('/api/clients', (req, res) => {
+    db.all(`
+        SELECT c.*, 
+            (SELECT COUNT(*) FROM client_steps WHERE client_id = c.id AND status = 'completed') as completed_steps,
+            (SELECT COUNT(*) FROM client_steps WHERE client_id = c.id) as total_steps
+        FROM clients c 
+        ORDER BY c.created_at DESC
+    `, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
     });
 });
 
-// Get single step
-app.get('/api/steps/:id', (req, res) => {
+// Get single client with all steps
+app.get('/api/clients/:id', (req, res) => {
     const { id } = req.params;
-    db.get('SELECT * FROM steps WHERE id = ?', [id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (!row) {
-            res.status(404).json({ error: 'Step not found' });
-            return;
-        }
-        res.json({
-            ...row,
-            completed: row.completed === 1
+    db.get('SELECT * FROM clients WHERE id = ?', [id], (err, client) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!client) return res.status(404).json({ error: 'Client not found' });
+        
+        db.all('SELECT * FROM client_steps WHERE client_id = ? ORDER BY step_order', [id], (err, steps) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ ...client, steps });
         });
     });
 });
 
-// Create step
-app.post('/api/steps', (req, res) => {
-    const { title, description, leader, category, step_order } = req.body;
-    
-    if (!title) {
-        res.status(400).json({ error: 'Title is required' });
-        return;
-    }
+// Create new client
+app.post('/api/clients', (req, res) => {
+    const { name, tier, bdm_name, contract_date, notes } = req.body;
+    if (!name) return res.status(400).json({ error: 'Client name is required' });
 
-    const id = Date.now().toString();
+    const id = `client-${Date.now()}`;
     const now = new Date().toISOString();
-    
+
     db.run(
-        `INSERT INTO steps (id, title, description, leader, category, completed, created_at, step_order)
-         VALUES (?, ?, ?, ?, ?, 0, ?, ?)`,
-        [id, title, description || null, leader || null, category || 'other', now, step_order || 0],
+        `INSERT INTO clients (id, name, tier, bdm_name, contract_date, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [id, name, tier || 'standard', bdm_name || null, contract_date || null, notes || null, now],
         function(err) {
-            if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-            }
-            res.status(201).json({
-                id,
-                title,
-                description: description || null,
-                leader: leader || null,
-                category: category || 'other',
-                completed: false,
-                created_at: now,
-                step_order: step_order || 0
+            if (err) return res.status(500).json({ error: err.message });
+            
+            // Create steps for this client
+            createClientSteps(id, (err) => {
+                if (err) return res.status(500).json({ error: err.message });
+                
+                // Log activity
+                db.run(`INSERT INTO activity_log (client_id, action, details) VALUES (?, 'client_created', ?)`,
+                    [id, `Client "${name}" created`]);
+                
+                res.status(201).json({ id, name, tier: tier || 'standard', bdm_name, contract_date, notes, created_at: now });
             });
         }
     );
 });
 
-// Update step
-app.put('/api/steps/:id', (req, res) => {
+// Update client
+app.put('/api/clients/:id', (req, res) => {
     const { id } = req.params;
-    const { title, description, leader, category, completed, step_order } = req.body;
-    
-    if (!title) {
-        res.status(400).json({ error: 'Title is required' });
-        return;
-    }
-
+    const { name, tier, bdm_name, contract_date, go_live_date, status, health_score, notes } = req.body;
     const now = new Date().toISOString();
-    const completedInt = completed ? 1 : 0;
-    const completedAt = completed ? now : null;
 
     db.run(
-        `UPDATE steps 
-         SET title = ?, description = ?, leader = ?, category = ?, completed = ?, 
-             updated_at = ?, completed_at = ?, step_order = ?
-         WHERE id = ?`,
-        [title, description || null, leader || null, category || 'other', completedInt, now, completedAt, step_order || 0, id],
+        `UPDATE clients SET name = ?, tier = ?, bdm_name = ?, contract_date = ?, go_live_date = ?, status = ?, health_score = ?, notes = ?, updated_at = ? WHERE id = ?`,
+        [name, tier, bdm_name, contract_date, go_live_date, status, health_score, notes, now, id],
         function(err) {
-            if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Step not found' });
-                return;
-            }
-            // Return updated step
-            db.get('SELECT * FROM steps WHERE id = ?', [id], (err, row) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                    return;
-                }
-                res.json({
-                    ...row,
-                    completed: row.completed === 1
-                });
-            });
+            if (err) return res.status(500).json({ error: err.message });
+            if (this.changes === 0) return res.status(404).json({ error: 'Client not found' });
+            res.json({ success: true });
         }
     );
 });
 
-// Delete step
-app.delete('/api/steps/:id', (req, res) => {
+// Delete client
+app.delete('/api/clients/:id', (req, res) => {
     const { id } = req.params;
-    db.run('DELETE FROM steps WHERE id = ?', [id], function(err) {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (this.changes === 0) {
-            res.status(404).json({ error: 'Step not found' });
-            return;
-        }
-        res.json({ message: 'Step deleted successfully', id });
+    db.serialize(() => {
+        db.run('DELETE FROM client_steps WHERE client_id = ?', [id]);
+        db.run('DELETE FROM activity_log WHERE client_id = ?', [id]);
+        db.run('DELETE FROM clients WHERE id = ?', [id], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true });
+        });
     });
 });
 
-// Toggle step completion
-app.patch('/api/steps/:id/toggle', (req, res) => {
-    const { id } = req.params;
-    db.get('SELECT * FROM steps WHERE id = ?', [id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+// --- CLIENT STEPS ---
+
+// Update client step (assign person, change status, add notes)
+app.put('/api/clients/:clientId/steps/:stepOrder', (req, res) => {
+    const { clientId, stepOrder } = req.params;
+    const { assigned_person, status, notes } = req.body;
+    const now = new Date().toISOString();
+
+    // Determine timestamps
+    let started_at = null;
+    let completed_at = null;
+    
+    db.get('SELECT * FROM client_steps WHERE client_id = ? AND step_order = ?', [clientId, stepOrder], (err, step) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!step) return res.status(404).json({ error: 'Step not found' });
+
+        if (status === 'in_progress' && step.status === 'pending') {
+            started_at = now;
+        } else {
+            started_at = step.started_at;
         }
-        if (!row) {
-            res.status(404).json({ error: 'Step not found' });
-            return;
+
+        if (status === 'completed' && step.status !== 'completed') {
+            completed_at = now;
+            if (!step.started_at) started_at = now;
+        } else {
+            completed_at = step.completed_at;
         }
-        
-        const newCompleted = row.completed === 0 ? 1 : 0;
-        const now = new Date().toISOString();
-        const completedAt = newCompleted === 1 ? now : null;
 
         db.run(
-            'UPDATE steps SET completed = ?, updated_at = ?, completed_at = ? WHERE id = ?',
-            [newCompleted, now, completedAt, id],
+            `UPDATE client_steps SET assigned_person = ?, status = ?, notes = ?, started_at = ?, completed_at = ? WHERE client_id = ? AND step_order = ?`,
+            [assigned_person || step.assigned_person, status || step.status, notes !== undefined ? notes : step.notes, started_at, completed_at, clientId, stepOrder],
             function(err) {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                    return;
+                if (err) return res.status(500).json({ error: err.message });
+
+                // Update client's current stage
+                if (status === 'completed') {
+                    db.run(`UPDATE clients SET current_stage = ?, updated_at = ? WHERE id = ? AND current_stage <= ?`,
+                        [parseInt(stepOrder) + 1, now, clientId, stepOrder]);
                 }
-                db.get('SELECT * FROM steps WHERE id = ?', [id], (err, updatedRow) => {
-                    if (err) {
-                        res.status(500).json({ error: err.message });
-                        return;
-                    }
-                    res.json({
-                        ...updatedRow,
-                        completed: updatedRow.completed === 1
-                    });
-                });
+
+                // Log activity
+                const action = status === 'completed' ? 'step_completed' : (assigned_person ? 'person_assigned' : 'step_updated');
+                db.run(`INSERT INTO activity_log (client_id, step_order, action, details, performed_by) VALUES (?, ?, ?, ?, ?)`,
+                    [clientId, stepOrder, action, `Step ${stepOrder} updated`, assigned_person]);
+
+                res.json({ success: true });
             }
         );
     });
 });
 
-// Get statistics
-app.get('/api/stats', (req, res) => {
-    db.all(`
-        SELECT 
-            COUNT(*) as total,
-            SUM(completed) as completed,
-            COUNT(*) - SUM(completed) as pending
-        FROM steps
-    `, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        const stats = rows[0];
-        res.json({
-            total: stats.total || 0,
-            completed: stats.completed || 0,
-            pending: stats.pending || 0,
-            percentage: stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0
-        });
+// Toggle step status
+app.patch('/api/clients/:clientId/steps/:stepOrder/toggle', (req, res) => {
+    const { clientId, stepOrder } = req.params;
+    const now = new Date().toISOString();
+
+    db.get('SELECT * FROM client_steps WHERE client_id = ? AND step_order = ?', [clientId, stepOrder], (err, step) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!step) return res.status(404).json({ error: 'Step not found' });
+
+        const newStatus = step.status === 'completed' ? 'pending' : 'completed';
+        const completed_at = newStatus === 'completed' ? now : null;
+        const started_at = step.started_at || (newStatus === 'completed' ? now : null);
+
+        db.run(
+            `UPDATE client_steps SET status = ?, started_at = ?, completed_at = ? WHERE client_id = ? AND step_order = ?`,
+            [newStatus, started_at, completed_at, clientId, stepOrder],
+            function(err) {
+                if (err) return res.status(500).json({ error: err.message });
+
+                // Update current stage
+                if (newStatus === 'completed') {
+                    db.run(`UPDATE clients SET current_stage = ?, updated_at = ? WHERE id = ? AND current_stage <= ?`,
+                        [parseInt(stepOrder) + 1, now, clientId, stepOrder]);
+                }
+
+                res.json({ success: true, status: newStatus });
+            }
+        );
     });
 });
 
-// Serve index.html for root
-app.get('/', (req, res) => {
-    try {
-        const indexPath = path.join(__dirname, 'index.html');
-        console.log('Serving index.html from:', indexPath);
-        if (!fs.existsSync(indexPath)) {
-            console.error('index.html not found at:', indexPath);
-            return res.status(500).send('index.html not found');
-        }
-        res.sendFile(indexPath, (err) => {
-            if (err) {
-                console.error('Error sending index.html:', err);
-                res.status(500).send('Error loading page');
-            }
-        });
-    } catch (error) {
-        console.error('Error serving index.html:', error);
-        res.status(500).send('Error loading page');
-    }
+// --- ACTIVITY LOG ---
+app.get('/api/clients/:id/activity', (req, res) => {
+    const { id } = req.params;
+    db.all('SELECT * FROM activity_log WHERE client_id = ? ORDER BY created_at DESC LIMIT 50', [id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
 });
 
-// Serve app.js and styles.css as static files
-app.get('/app.js', (req, res) => {
-    res.sendFile(path.join(__dirname, 'app.js'), { headers: { 'Content-Type': 'application/javascript' } });
+// --- DASHBOARD STATS ---
+app.get('/api/stats', (req, res) => {
+    db.get(`
+        SELECT 
+            (SELECT COUNT(*) FROM clients) as total_clients,
+            (SELECT COUNT(*) FROM clients WHERE status = 'active') as active_clients,
+            (SELECT COUNT(*) FROM clients WHERE current_stage <= 12) as in_onboarding,
+            (SELECT COUNT(*) FROM clients WHERE current_stage > 12) as in_bau,
+            (SELECT COUNT(*) FROM clients WHERE health_score < 60) as at_risk
+        FROM clients LIMIT 1
+    `, (err, stats) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(stats || { total_clients: 0, active_clients: 0, in_onboarding: 0, in_bau: 0, at_risk: 0 });
+    });
 });
 
-app.get('/styles.css', (req, res) => {
-    res.sendFile(path.join(__dirname, 'styles.css'), { headers: { 'Content-Type': 'text/css' } });
+// --- TEMPLATE (for reference) ---
+app.get('/api/template', (req, res) => {
+    db.all('SELECT * FROM template_steps ORDER BY step_order', (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+// Serve frontend
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
-    console.log(`Database: ${DB_PATH}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-// Error handling for uncaught exceptions
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    process.exit(1);
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log('Database connection closed');
-        process.exit(0);
-    });
-});
+process.on('uncaughtException', (err) => { console.error('Uncaught:', err); process.exit(1); });
+process.on('SIGINT', () => { db.close(); process.exit(0); });

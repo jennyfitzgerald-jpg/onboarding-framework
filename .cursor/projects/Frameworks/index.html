@@ -3,173 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Onboarding Framework</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Diagnexia Onboarding Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>Staff Onboarding Framework</h1>
-            <p class="subtitle">Track progress, assign leaders, and communicate what's been done</p>
-            <div class="header-actions">
-                <button class="btn btn-secondary" id="shareBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                        <polyline points="16 6 12 2 8 6"></polyline>
-                        <line x1="12" y1="2" x2="12" y2="15"></line>
-                    </svg>
-                    Share Progress
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">Diagnexia</h1>
+                <span class="logo-subtitle">Onboarding Tracker</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item" data-view="clients">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    All Clients
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-primary btn-block" id="addClientBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add New Client
                 </button>
-                <button class="btn btn-primary" id="addStepBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Add Step
-                </button>
             </div>
-        </header>
+        </aside>
 
-        <div class="progress-bar-container">
-            <div class="progress-info">
-                <span class="progress-text">Overall Progress</span>
-                <span class="progress-percentage" id="progressPercentage">0%</span>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view active">
+                <header class="view-header">
+                    <h2>Dashboard</h2>
+                    <p class="subtitle">Overview of all client onboarding progress</p>
+                </header>
+
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+                        <div class="stat-info"><span class="stat-value" id="statTotalClients">0</span><span class="stat-label">Total Clients</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                        <div class="stat-info"><span class="stat-value" id="statActive">0</span><span class="stat-label">Active</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                        <div class="stat-info"><span class="stat-value" id="statOnboarding">0</span><span class="stat-label">In Onboarding</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                        <div class="stat-info"><span class="stat-value" id="statAtRisk">0</span><span class="stat-label">At Risk</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Recent Clients</h3>
+                        <button class="btn btn-secondary btn-sm" onclick="showView('clients')">View All</button>
+                    </div>
+                    <div id="recentClients" class="clients-grid"></div>
+                </div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+
+            <!-- Clients List View -->
+            <div id="clientsView" class="view">
+                <header class="view-header">
+                    <h2>All Clients</h2>
+                    <div class="view-actions">
+                        <select id="filterTier" class="form-select">
+                            <option value="">All Tiers</option>
+                            <option value="strategic">Strategic</option>
+                            <option value="standard">Standard</option>
+                            <option value="low-touch">Low-Touch</option>
+                        </select>
+                        <button class="btn btn-primary" id="addClientBtn2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add Client
+                        </button>
+                    </div>
+                </header>
+                <div id="clientsList" class="clients-grid"></div>
             </div>
-        </div>
 
-        <div class="framework-container" id="frameworkContainer">
-            <!-- Steps will be dynamically added here -->
-        </div>
+            <!-- Client Detail View -->
+            <div id="clientDetailView" class="view">
+                <header class="view-header">
+                    <button class="btn btn-secondary btn-sm back-btn" onclick="showView('clients')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Back
+                    </button>
+                    <div class="client-header-info">
+                        <h2 id="clientName">Client Name</h2>
+                        <div class="client-meta">
+                            <span class="tier-badge" id="clientTier">Standard</span>
+                            <span class="stage-badge" id="clientStage">Stage 1</span>
+                        </div>
+                    </div>
+                    <div class="view-actions">
+                        <button class="btn btn-secondary" id="editClientBtn">Edit Client</button>
+                    </div>
+                </header>
 
-        <div class="empty-state" id="emptyState">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M9 11l3 3L22 4"></path>
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-            </svg>
-            <h2>No steps yet</h2>
-            <p>Click "Add Step" to create your first onboarding step</p>
-        </div>
+                <div class="client-progress-bar">
+                    <div class="progress-info">
+                        <span>Onboarding Progress</span>
+                        <span id="clientProgress">0%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" id="clientProgressFill"></div></div>
+                </div>
+
+                <div class="client-details-grid">
+                    <div class="detail-card">
+                        <label>BDM</label>
+                        <span id="clientBDM">Not assigned</span>
+                    </div>
+                    <div class="detail-card">
+                        <label>Contract Date</label>
+                        <span id="clientContractDate">-</span>
+                    </div>
+                    <div class="detail-card">
+                        <label>Go-Live Date</label>
+                        <span id="clientGoLiveDate">-</span>
+                    </div>
+                    <div class="detail-card">
+                        <label>Health Score</label>
+                        <span id="clientHealthScore">100</span>
+                    </div>
+                </div>
+
+                <div class="steps-container" id="clientSteps"></div>
+            </div>
+        </main>
     </div>
 
-    <!-- Add Step Modal -->
-    <div class="modal" id="addStepModal">
+    <!-- Add/Edit Client Modal -->
+    <div class="modal" id="clientModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add New Step</h2>
-                <button class="modal-close" id="closeAddModal">&times;</button>
+                <h2 id="clientModalTitle">Add New Client</h2>
+                <button class="modal-close" onclick="closeClientModal()">&times;</button>
             </div>
-            <form id="addStepForm">
+            <form id="clientForm">
+                <input type="hidden" id="clientId">
                 <div class="form-group">
-                    <label for="stepTitle">Step Title *</label>
-                    <input type="text" id="stepTitle" required placeholder="e.g., Complete HR paperwork">
+                    <label for="clientNameInput">Client Name *</label>
+                    <input type="text" id="clientNameInput" required placeholder="e.g., North West London Pathology">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientTierInput">Tier</label>
+                        <select id="clientTierInput">
+                            <option value="standard">Standard</option>
+                            <option value="strategic">Strategic (White Glove)</option>
+                            <option value="low-touch">Low-Touch (Digital Only)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientBDMInput">BDM Name</label>
+                        <input type="text" id="clientBDMInput" placeholder="e.g., John Smith">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientContractDateInput">Contract Date</label>
+                        <input type="date" id="clientContractDateInput">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientGoLiveDateInput">Target Go-Live</label>
+                        <input type="date" id="clientGoLiveDateInput">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="stepDescription">Description</label>
-                    <textarea id="stepDescription" rows="3" placeholder="What needs to be done in this step?"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="stepLeader">Assigned Leader</label>
-                    <input type="text" id="stepLeader" placeholder="Enter name of person leading this step">
-                </div>
-                <div class="form-group">
-                    <label for="stepCategory">Category</label>
-                    <select id="stepCategory">
-                        <option value="preparation">Preparation</option>
-                        <option value="training">Training</option>
-                        <option value="documentation">Documentation</option>
-                        <option value="integration">Integration</option>
-                        <option value="review">Review</option>
-                        <option value="other">Other</option>
-                    </select>
+                    <label for="clientNotesInput">Notes</label>
+                    <textarea id="clientNotesInput" rows="3" placeholder="Any special requirements or notes..."></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelAddStep">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Step</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeClientModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Client</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Edit Step Modal -->
-    <div class="modal" id="editStepModal">
-        <div class="modal-content">
+    <!-- Assign Person Modal -->
+    <div class="modal" id="assignModal">
+        <div class="modal-content modal-sm">
             <div class="modal-header">
-                <h2>Edit Step</h2>
-                <button class="modal-close" id="closeEditModal">&times;</button>
+                <h2>Assign Person</h2>
+                <button class="modal-close" onclick="closeAssignModal()">&times;</button>
             </div>
-            <form id="editStepForm">
-                <input type="hidden" id="editStepId">
+            <form id="assignForm">
+                <input type="hidden" id="assignClientId">
+                <input type="hidden" id="assignStepOrder">
                 <div class="form-group">
-                    <label for="editStepTitle">Step Title *</label>
-                    <input type="text" id="editStepTitle" required>
+                    <label for="assignPersonInput">Person Name</label>
+                    <input type="text" id="assignPersonInput" placeholder="e.g., Rebecca Jones" list="teamMembers">
+                    <datalist id="teamMembers">
+                        <option value="Mike Langford">
+                        <option value="Joanne">
+                        <option value="Rebecca">
+                        <option value="Maninder">
+                        <option value="Danniella">
+                    </datalist>
                 </div>
                 <div class="form-group">
-                    <label for="editStepDescription">Description</label>
-                    <textarea id="editStepDescription" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editStepLeader">Assigned Leader</label>
-                    <input type="text" id="editStepLeader" placeholder="Enter name of person leading this step">
-                </div>
-                <div class="form-group">
-                    <label for="editStepCategory">Category</label>
-                    <select id="editStepCategory">
-                        <option value="preparation">Preparation</option>
-                        <option value="training">Training</option>
-                        <option value="documentation">Documentation</option>
-                        <option value="integration">Integration</option>
-                        <option value="review">Review</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="editStepCompleted">
-                        <span>Mark as completed</span>
-                    </label>
+                    <label for="assignNotesInput">Notes (optional)</label>
+                    <textarea id="assignNotesInput" rows="2" placeholder="Any notes for this step..."></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelEditStep">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Share Modal -->
-    <div class="modal" id="shareModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Share Progress</h2>
-                <button class="modal-close" id="closeShareModal">&times;</button>
-            </div>
-            <div class="share-content">
-                <p>Share this link with your team to view the current onboarding progress:</p>
-                <div class="share-input-group">
-                    <input type="text" id="shareUrl" readonly>
-                    <button class="btn btn-primary" id="copyUrlBtn">Copy</button>
-                </div>
-                <div class="share-stats">
-                    <div class="stat">
-                        <span class="stat-value" id="totalSteps">0</span>
-                        <span class="stat-label">Total Steps</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="completedSteps">0</span>
-                        <span class="stat-label">Completed</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="pendingSteps">0</span>
-                        <span class="stat-label">Pending</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

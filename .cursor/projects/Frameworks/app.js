@@ -1,452 +1,385 @@
-// API Configuration
-const API_BASE_URL = window.location.origin;
+// Diagnexia Onboarding Tracker - Multi-Client Version
+const API = window.location.origin;
 
-// State management
-let steps = [];
+let clients = [];
+let currentClient = null;
 
-// Initialize app
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadSteps();
     setupEventListeners();
+    loadDashboard();
 });
 
-// API Functions
-async function loadSteps() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/steps`);
-        if (!response.ok) throw new Error('Failed to load steps');
-        steps = await response.json();
-        renderSteps();
-        updateProgress();
-    } catch (error) {
-        console.error('Error loading steps:', error);
-        showError('Failed to load steps. Make sure the server is running.');
-    }
-}
-
-async function createStep(stepData) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/steps`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(stepData)
-        });
-        if (!response.ok) throw new Error('Failed to create step');
-        const newStep = await response.json();
-        await loadSteps(); // Reload all steps
-        return newStep;
-    } catch (error) {
-        console.error('Error creating step:', error);
-        throw error;
-    }
-}
-
-async function updateStep(stepId, stepData) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/steps/${stepId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(stepData)
-        });
-        if (!response.ok) throw new Error('Failed to update step');
-        const updatedStep = await response.json();
-        await loadSteps(); // Reload all steps
-        return updatedStep;
-    } catch (error) {
-        console.error('Error updating step:', error);
-        throw error;
-    }
-}
-
-async function deleteStep(stepId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/steps/${stepId}`, {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Failed to delete step');
-        await loadSteps(); // Reload all steps
-    } catch (error) {
-        console.error('Error deleting step:', error);
-        throw error;
-    }
-}
-
-async function toggleStepCompletion(stepId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/steps/${stepId}/toggle`, {
-            method: 'PATCH'
-        });
-        if (!response.ok) throw new Error('Failed to toggle step');
-        await loadSteps(); // Reload all steps
-    } catch (error) {
-        console.error('Error toggling step:', error);
-        throw error;
-    }
-}
-
-async function getStats() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/stats`);
-        if (!response.ok) throw new Error('Failed to load stats');
-        return await response.json();
-    } catch (error) {
-        console.error('Error loading stats:', error);
-        throw error;
-    }
-}
-
-// Event Listeners
 function setupEventListeners() {
-    // Add step button
-    document.getElementById('addStepBtn').addEventListener('click', () => {
-        openAddModal();
-    });
-
-    // Share button
-    document.getElementById('shareBtn').addEventListener('click', () => {
-        openShareModal();
-    });
-
-    // Modal close buttons
-    document.getElementById('closeAddModal').addEventListener('click', closeAddModal);
-    document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
-    document.getElementById('closeShareModal').addEventListener('click', closeShareModal);
-    document.getElementById('cancelAddStep').addEventListener('click', closeAddModal);
-    document.getElementById('cancelEditStep').addEventListener('click', closeEditModal);
-
-    // Forms
-    document.getElementById('addStepForm').addEventListener('submit', handleAddStep);
-    document.getElementById('editStepForm').addEventListener('submit', handleEditStep);
-
-    // Copy URL button
-    document.getElementById('copyUrlBtn').addEventListener('click', copyShareUrl);
-
-    // Close modals on outside click
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const view = e.currentTarget.dataset.view;
+            showView(view);
         });
+    });
+
+    // Add client buttons
+    document.getElementById('addClientBtn').addEventListener('click', openAddClientModal);
+    document.getElementById('addClientBtn2').addEventListener('click', openAddClientModal);
+    
+    // Forms
+    document.getElementById('clientForm').addEventListener('submit', handleClientSubmit);
+    document.getElementById('assignForm').addEventListener('submit', handleAssignSubmit);
+    
+    // Filter
+    document.getElementById('filterTier').addEventListener('change', filterClients);
+    
+    // Edit client
+    document.getElementById('editClientBtn').addEventListener('click', () => {
+        if (currentClient) openEditClientModal(currentClient);
     });
 }
 
-// Render steps
-function renderSteps() {
-    const container = document.getElementById('frameworkContainer');
-    const emptyState = document.getElementById('emptyState');
+// ============ VIEWS ============
+function showView(viewName) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    document.getElementById(`${viewName}View`).classList.add('active');
+    document.querySelector(`[data-view="${viewName}"]`)?.classList.add('active');
+    
+    if (viewName === 'dashboard') loadDashboard();
+    if (viewName === 'clients') loadClients();
+}
 
-    if (steps.length === 0) {
-        container.innerHTML = '';
-        emptyState.classList.add('visible');
+// ============ DASHBOARD ============
+async function loadDashboard() {
+    try {
+        const [stats, clientsData] = await Promise.all([
+            fetch(`${API}/api/stats`).then(r => r.json()),
+            fetch(`${API}/api/clients`).then(r => r.json())
+        ]);
+        
+        clients = clientsData;
+        
+        document.getElementById('statTotalClients').textContent = stats.total_clients || 0;
+        document.getElementById('statActive').textContent = stats.active_clients || 0;
+        document.getElementById('statOnboarding').textContent = stats.in_onboarding || 0;
+        document.getElementById('statAtRisk').textContent = stats.at_risk || 0;
+        
+        renderRecentClients(clients.slice(0, 6));
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+function renderRecentClients(clientsList) {
+    const container = document.getElementById('recentClients');
+    if (clientsList.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No clients yet. Add your first client to get started.</p></div>';
         return;
     }
-
-    emptyState.classList.remove('visible');
-    container.innerHTML = steps.map((step, index) => createStepCard(step, index)).join('');
-    
-    // Attach event listeners to rendered cards
-    attachStepEventListeners();
+    container.innerHTML = clientsList.map(c => createClientCard(c)).join('');
+    attachClientCardListeners();
 }
 
-function createStepCard(step, index) {
-    const isCompleted = step.completed || false;
-    const leader = step.leader || '';
-    const category = step.category || 'other';
+// ============ CLIENTS LIST ============
+async function loadClients() {
+    try {
+        const response = await fetch(`${API}/api/clients`);
+        clients = await response.json();
+        renderClientsList(clients);
+    } catch (error) {
+        console.error('Error loading clients:', error);
+    }
+}
+
+function renderClientsList(clientsList) {
+    const container = document.getElementById('clientsList');
+    if (clientsList.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No clients found. Add a client to start tracking their onboarding.</p></div>';
+        return;
+    }
+    container.innerHTML = clientsList.map(c => createClientCard(c)).join('');
+    attachClientCardListeners();
+}
+
+function createClientCard(client) {
+    const progress = client.total_steps ? Math.round((client.completed_steps / client.total_steps) * 100) : 0;
+    const tierClass = client.tier || 'standard';
+    const stageText = client.current_stage <= 15 ? `Stage ${client.current_stage}` : 'BAU';
     
     return `
-        <div class="step-card ${isCompleted ? 'completed' : ''}" data-id="${step.id}">
-            <div class="step-header">
-                <div class="step-title-section">
-                    <span class="step-number">${index + 1}</span>
-                    <h3 class="step-title">${escapeHtml(step.title)}</h3>
-                </div>
-                <div class="step-actions">
-                    <button class="btn btn-sm btn-secondary edit-step" data-id="${step.id}">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                        Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-step" data-id="${step.id}">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        Delete
-                    </button>
-                </div>
+        <div class="client-card" data-id="${client.id}">
+            <div class="client-card-header">
+                <h3 class="client-card-name">${escapeHtml(client.name)}</h3>
+                <span class="tier-badge ${tierClass}">${tierClass}</span>
             </div>
-            ${step.description ? `<p class="step-description">${escapeHtml(step.description)}</p>` : ''}
-            <div class="step-meta">
-                <div class="step-meta-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span class="step-leader ${leader ? '' : 'empty'}" data-id="${step.id}" data-leader="${leader || ''}">
-                        ${leader || 'No leader assigned'}
-                    </span>
-                    <button class="btn btn-sm btn-secondary assign-leader-btn" data-id="${step.id}" title="Assign Leader">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="8.5" cy="7" r="4"></circle>
-                            <line x1="20" y1="8" x2="20" y2="14"></line>
-                            <line x1="23" y1="11" x2="17" y2="11"></line>
-                        </svg>
-                        ${leader ? 'Change' : 'Assign'}
-                    </button>
+            <div class="client-card-meta">
+                <span class="stage-indicator">${stageText}</span>
+                ${client.bdm_name ? `<span class="bdm-name">BDM: ${escapeHtml(client.bdm_name)}</span>` : ''}
+            </div>
+            <div class="client-card-progress">
+                <div class="progress-bar small">
+                    <div class="progress-fill" style="width: ${progress}%"></div>
                 </div>
-                <span class="step-category ${category}">${category}</span>
-                <span class="step-status ${isCompleted ? 'completed' : 'pending'}">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        ${isCompleted 
-                            ? '<path d="M20 6L9 17l-5-5"></path>'
-                            : '<circle cx="12" cy="12" r="10"></circle>'
-                        }
-                    </svg>
-                    ${isCompleted ? 'Completed' : 'Pending'}
-                </span>
+                <span class="progress-text">${progress}% complete</span>
+            </div>
+            <div class="client-card-footer">
+                <span class="completed-count">${client.completed_steps || 0}/${client.total_steps || 15} steps</span>
+                <button class="btn btn-sm btn-primary view-client-btn">View Details</button>
             </div>
         </div>
     `;
 }
 
-function attachStepEventListeners() {
-    // Edit buttons
-    document.querySelectorAll('.edit-step').forEach(btn => {
+function attachClientCardListeners() {
+    document.querySelectorAll('.client-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const clientId = card.dataset.id;
+            openClientDetail(clientId);
+        });
+    });
+}
+
+function filterClients() {
+    const tier = document.getElementById('filterTier').value;
+    const filtered = tier ? clients.filter(c => c.tier === tier) : clients;
+    renderClientsList(filtered);
+}
+
+// ============ CLIENT DETAIL ============
+async function openClientDetail(clientId) {
+    try {
+        const response = await fetch(`${API}/api/clients/${clientId}`);
+        currentClient = await response.json();
+        renderClientDetail();
+        showView('clientDetail');
+    } catch (error) {
+        console.error('Error loading client:', error);
+        alert('Failed to load client details');
+    }
+}
+
+function renderClientDetail() {
+    if (!currentClient) return;
+    
+    document.getElementById('clientName').textContent = currentClient.name;
+    document.getElementById('clientTier').textContent = currentClient.tier || 'Standard';
+    document.getElementById('clientTier').className = `tier-badge ${currentClient.tier || 'standard'}`;
+    document.getElementById('clientStage').textContent = currentClient.current_stage <= 15 ? `Stage ${currentClient.current_stage}` : 'BAU';
+    document.getElementById('clientBDM').textContent = currentClient.bdm_name || 'Not assigned';
+    document.getElementById('clientContractDate').textContent = currentClient.contract_date ? formatDate(currentClient.contract_date) : '-';
+    document.getElementById('clientGoLiveDate').textContent = currentClient.go_live_date ? formatDate(currentClient.go_live_date) : '-';
+    document.getElementById('clientHealthScore').textContent = currentClient.health_score || 100;
+    
+    const steps = currentClient.steps || [];
+    const completed = steps.filter(s => s.status === 'completed').length;
+    const progress = steps.length ? Math.round((completed / steps.length) * 100) : 0;
+    
+    document.getElementById('clientProgress').textContent = `${progress}%`;
+    document.getElementById('clientProgressFill').style.width = `${progress}%`;
+    
+    renderClientSteps(steps);
+}
+
+function renderClientSteps(steps) {
+    const container = document.getElementById('clientSteps');
+    container.innerHTML = steps.map(step => createStepCard(step)).join('');
+    attachStepListeners();
+}
+
+function createStepCard(step) {
+    const statusClass = step.status || 'pending';
+    const isCompleted = step.status === 'completed';
+    const isInProgress = step.status === 'in_progress';
+    
+    return `
+        <div class="step-card ${statusClass}" data-step="${step.step_order}">
+            <div class="step-header">
+                <div class="step-number-wrapper">
+                    <span class="step-number">${step.step_order}</span>
+                    <div class="step-status-icon ${statusClass}">
+                        ${isCompleted ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : 
+                          isInProgress ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>' :
+                          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>'}
+                    </div>
+                </div>
+                <div class="step-info">
+                    <h4 class="step-title">${escapeHtml(step.title)}</h4>
+                    <span class="step-owner">Default: ${escapeHtml(step.default_owner || 'Unassigned')}</span>
+                </div>
+                <div class="step-actions">
+                    <select class="status-select" data-step="${step.step_order}">
+                        <option value="pending" ${step.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="in_progress" ${step.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="completed" ${step.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="step-body">
+                <div class="step-assignment">
+                    <div class="assigned-person">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span class="person-name ${step.assigned_person ? '' : 'empty'}">${step.assigned_person || 'No one assigned'}</span>
+                    </div>
+                    <button class="btn btn-sm btn-secondary assign-btn" data-step="${step.step_order}">
+                        ${step.assigned_person ? 'Reassign' : 'Assign Person'}
+                    </button>
+                </div>
+                
+                ${step.notes ? `<div class="step-notes"><strong>Notes:</strong> ${escapeHtml(step.notes)}</div>` : ''}
+                
+                <details class="step-details">
+                    <summary>View Details</summary>
+                    <pre class="step-description">${escapeHtml(step.description || 'No description')}</pre>
+                </details>
+                
+                <div class="step-timestamps">
+                    ${step.started_at ? `<span class="timestamp">Started: ${formatDateTime(step.started_at)}</span>` : ''}
+                    ${step.completed_at ? `<span class="timestamp">Completed: ${formatDateTime(step.completed_at)}</span>` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function attachStepListeners() {
+    // Status change
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async (e) => {
+            const stepOrder = e.target.dataset.step;
+            const newStatus = e.target.value;
+            await updateStepStatus(stepOrder, newStatus);
+        });
+    });
+    
+    // Assign button
+    document.querySelectorAll('.assign-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const stepId = e.currentTarget.dataset.id;
-            openEditModal(stepId);
-        });
-    });
-
-    // Delete buttons
-    document.querySelectorAll('.delete-step').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const stepId = e.currentTarget.dataset.id;
-            if (confirm('Are you sure you want to delete this step?')) {
-                try {
-                    await deleteStep(stepId);
-                } catch (error) {
-                    alert('Failed to delete step. Please try again.');
-                }
-            }
-        });
-    });
-
-    // Assign leader buttons
-    document.querySelectorAll('.assign-leader-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const stepId = btn.dataset.id;
-            const step = steps.find(s => s.id === stepId);
-            const currentLeader = step?.leader || '';
-            
-            const leaderName = prompt('Enter the name of the person leading this step:', currentLeader);
-            if (leaderName !== null && leaderName.trim() !== '') {
-                try {
-                    await updateStep(stepId, {
-                        title: step.title,
-                        description: step.description || '',
-                        leader: leaderName.trim(),
-                        category: step.category || 'other',
-                        completed: step.completed || false,
-                        step_order: step.step_order || 0
-                    });
-                } catch (error) {
-                    alert('Failed to assign leader. Please try again.');
-                }
-            }
-        });
-    });
-
-    // Toggle completion on card click
-    document.querySelectorAll('.step-card').forEach(card => {
-        card.addEventListener('click', async (e) => {
-            // Don't toggle if clicking on buttons or inputs
-            if (e.target.closest('.step-actions') || e.target.closest('button')) {
-                return;
-            }
-            const stepId = card.dataset.id;
-            try {
-                await toggleStepCompletion(stepId);
-            } catch (error) {
-                alert('Failed to update step. Please try again.');
-            }
+            const stepOrder = e.target.dataset.step;
+            openAssignModal(stepOrder);
         });
     });
 }
 
-// Step Management
-async function handleAddStep(e) {
+async function updateStepStatus(stepOrder, status) {
+    if (!currentClient) return;
+    try {
+        await fetch(`${API}/api/clients/${currentClient.id}/steps/${stepOrder}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        await openClientDetail(currentClient.id);
+    } catch (error) {
+        console.error('Error updating step:', error);
+        alert('Failed to update step');
+    }
+}
+
+// ============ MODALS ============
+function openAddClientModal() {
+    document.getElementById('clientModalTitle').textContent = 'Add New Client';
+    document.getElementById('clientForm').reset();
+    document.getElementById('clientId').value = '';
+    document.getElementById('clientModal').classList.add('active');
+}
+
+function openEditClientModal(client) {
+    document.getElementById('clientModalTitle').textContent = 'Edit Client';
+    document.getElementById('clientId').value = client.id;
+    document.getElementById('clientNameInput').value = client.name || '';
+    document.getElementById('clientTierInput').value = client.tier || 'standard';
+    document.getElementById('clientBDMInput').value = client.bdm_name || '';
+    document.getElementById('clientContractDateInput').value = client.contract_date || '';
+    document.getElementById('clientGoLiveDateInput').value = client.go_live_date || '';
+    document.getElementById('clientNotesInput').value = client.notes || '';
+    document.getElementById('clientModal').classList.add('active');
+}
+
+function closeClientModal() {
+    document.getElementById('clientModal').classList.remove('active');
+}
+
+async function handleClientSubmit(e) {
     e.preventDefault();
     
-    const title = document.getElementById('stepTitle').value.trim();
-    const description = document.getElementById('stepDescription').value.trim();
-    const leader = document.getElementById('stepLeader').value.trim();
-    const category = document.getElementById('stepCategory').value;
-
-    if (!title) {
-        alert('Please enter a step title');
+    const id = document.getElementById('clientId').value;
+    const data = {
+        name: document.getElementById('clientNameInput').value.trim(),
+        tier: document.getElementById('clientTierInput').value,
+        bdm_name: document.getElementById('clientBDMInput').value.trim() || null,
+        contract_date: document.getElementById('clientContractDateInput').value || null,
+        go_live_date: document.getElementById('clientGoLiveDateInput').value || null,
+        notes: document.getElementById('clientNotesInput').value.trim() || null
+    };
+    
+    if (!data.name) {
+        alert('Please enter a client name');
         return;
     }
-
+    
     try {
-        await createStep({
-            title,
-            description: description || null,
-            leader: leader || null,
-            category: category || 'other',
-            step_order: steps.length
-        });
-        closeAddModal();
-        resetAddForm();
+        if (id) {
+            await fetch(`${API}/api/clients/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } else {
+            await fetch(`${API}/api/clients`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+        closeClientModal();
+        loadClients();
+        if (currentClient && id === currentClient.id) {
+            openClientDetail(id);
+        }
     } catch (error) {
-        alert('Failed to create step. Please try again.');
+        console.error('Error saving client:', error);
+        alert('Failed to save client');
     }
 }
 
-async function handleEditStep(e) {
+function openAssignModal(stepOrder) {
+    const step = currentClient?.steps?.find(s => s.step_order == stepOrder);
+    document.getElementById('assignClientId').value = currentClient?.id || '';
+    document.getElementById('assignStepOrder').value = stepOrder;
+    document.getElementById('assignPersonInput').value = step?.assigned_person || '';
+    document.getElementById('assignNotesInput').value = step?.notes || '';
+    document.getElementById('assignModal').classList.add('active');
+}
+
+function closeAssignModal() {
+    document.getElementById('assignModal').classList.remove('active');
+}
+
+async function handleAssignSubmit(e) {
     e.preventDefault();
     
-    const stepId = document.getElementById('editStepId').value;
-    const title = document.getElementById('editStepTitle').value.trim();
-    const description = document.getElementById('editStepDescription').value.trim();
-    const leader = document.getElementById('editStepLeader').value.trim();
-    const category = document.getElementById('editStepCategory').value;
-    const completed = document.getElementById('editStepCompleted').checked;
-
-    if (!title) {
-        alert('Please enter a step title');
-        return;
-    }
-
+    const clientId = document.getElementById('assignClientId').value;
+    const stepOrder = document.getElementById('assignStepOrder').value;
+    const assignedPerson = document.getElementById('assignPersonInput').value.trim();
+    const notes = document.getElementById('assignNotesInput').value.trim();
+    
     try {
-        const step = steps.find(s => s.id === stepId);
-        await updateStep(stepId, {
-            title,
-            description: description || null,
-            leader: leader || null,
-            category: category || 'other',
-            completed,
-            step_order: step?.step_order || 0
+        await fetch(`${API}/api/clients/${clientId}/steps/${stepOrder}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ assigned_person: assignedPerson, notes })
         });
-        closeEditModal();
+        closeAssignModal();
+        await openClientDetail(clientId);
     } catch (error) {
-        alert('Failed to update step. Please try again.');
+        console.error('Error assigning person:', error);
+        alert('Failed to assign person');
     }
 }
 
-// Modal Management
-function openAddModal() {
-    document.getElementById('addStepModal').classList.add('active');
-    document.getElementById('stepTitle').focus();
-}
-
-function closeAddModal() {
-    document.getElementById('addStepModal').classList.remove('active');
-    resetAddForm();
-}
-
-function resetAddForm() {
-    document.getElementById('addStepForm').reset();
-}
-
-function openEditModal(stepId) {
-    const step = steps.find(s => s.id === stepId);
-    if (!step) return;
-
-    document.getElementById('editStepId').value = step.id;
-    document.getElementById('editStepTitle').value = step.title;
-    document.getElementById('editStepDescription').value = step.description || '';
-    document.getElementById('editStepLeader').value = step.leader || '';
-    document.getElementById('editStepCategory').value = step.category || 'other';
-    document.getElementById('editStepCompleted').checked = step.completed || false;
-
-    document.getElementById('editStepModal').classList.add('active');
-}
-
-function closeEditModal() {
-    document.getElementById('editStepModal').classList.remove('active');
-}
-
-async function openShareModal() {
-    const url = window.location.href;
-    document.getElementById('shareUrl').value = url;
-    
-    try {
-        const stats = await getStats();
-        document.getElementById('totalSteps').textContent = stats.total;
-        document.getElementById('completedSteps').textContent = stats.completed;
-        document.getElementById('pendingSteps').textContent = stats.pending;
-    } catch (error) {
-        // Fallback to local calculation
-        const completed = steps.filter(s => s.completed).length;
-        const pending = steps.filter(s => !s.completed).length;
-        document.getElementById('totalSteps').textContent = steps.length;
-        document.getElementById('completedSteps').textContent = completed;
-        document.getElementById('pendingSteps').textContent = pending;
-    }
-    
-    document.getElementById('shareModal').classList.add('active');
-}
-
-function closeShareModal() {
-    document.getElementById('shareModal').classList.remove('active');
-}
-
-function copyShareUrl() {
-    const urlInput = document.getElementById('shareUrl');
-    urlInput.select();
-    urlInput.setSelectionRange(0, 99999); // For mobile devices
-    
-    try {
-        document.execCommand('copy');
-        const btn = document.getElementById('copyUrlBtn');
-        const originalText = btn.textContent;
-        btn.textContent = 'Copied!';
-        btn.style.background = 'var(--success-color)';
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-        }, 2000);
-    } catch (err) {
-        // Fallback for modern browsers
-        navigator.clipboard.writeText(urlInput.value).then(() => {
-            const btn = document.getElementById('copyUrlBtn');
-            const originalText = btn.textContent;
-            btn.textContent = 'Copied!';
-            btn.style.background = 'var(--success-color)';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-            }, 2000);
-        }).catch(() => {
-            alert('Failed to copy URL. Please copy it manually.');
-        });
-    }
-}
-
-// Progress Management
-function updateProgress() {
-    if (steps.length === 0) {
-        document.getElementById('progressPercentage').textContent = '0%';
-        document.getElementById('progressFill').style.width = '0%';
-        return;
-    }
-
-    const completed = steps.filter(s => s.completed).length;
-    const percentage = Math.round((completed / steps.length) * 100);
-    
-    document.getElementById('progressPercentage').textContent = `${percentage}%`;
-    document.getElementById('progressFill').style.width = `${percentage}%`;
-}
-
-// Utility
+// ============ UTILITIES ============
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -454,11 +387,17 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function showError(message) {
-    // Simple error display - you can enhance this
-    const errorDiv = document.createElement('div');
-    errorDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem; border-radius: 8px; z-index: 10000;';
-    errorDiv.textContent = message;
-    document.body.appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 5000);
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
+function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+// Make showView global for inline handlers
+window.showView = showView;
+window.closeClientModal = closeClientModal;
+window.closeAssignModal = closeAssignModal;
