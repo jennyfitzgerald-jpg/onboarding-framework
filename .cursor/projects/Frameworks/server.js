@@ -7,13 +7,13 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const DB_PATH = path.join(__dirname, 'database.sqlite');
 
 // Ensure database directory exists (for cloud deployments)
 const dbDir = path.dirname(DB_PATH);
 if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
 }
-const DB_PATH = path.join(__dirname, 'database.sqlite');
 
 // Middleware
 app.use(cors());
