@@ -1,19 +1,10 @@
 {
-  "name": "kickoff-workspace",
+  "name": "onboarding-framework-root",
   "version": "1.0.0",
-  "description": "Workspace for building and managing the Deciphex 2026 Kickoff presentation.",
+  "description": "Root entry point for onboarding framework",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "playwright": "^1.57.0"
-  }
+  "dependencies": {}
 }
