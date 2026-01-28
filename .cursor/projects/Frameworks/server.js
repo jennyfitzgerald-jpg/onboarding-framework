@@ -24,7 +24,18 @@ if (!fs.existsSync(dbDir)) {
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(__dirname));
+
+// Serve static files (but exclude .js files that are server code)
+app.use(express.static(__dirname, {
+    index: 'index.html',
+    extensions: ['html', 'css', 'js'],
+    setHeaders: (res, path) => {
+        // Don't serve .js files as static if they're in root (they're server files)
+        if (path.endsWith('.js') && !path.includes('/app.js')) {
+            return;
+        }
+    }
+}));
 
 // Initialize database
 console.log('Initializing database...');
@@ -79,8 +90,12 @@ function initializeDatabase() {
 
 // Get all steps
 app.get('/api/steps', (req, res) => {
+    if (!db) {
+        return res.status(500).json({ error: 'Database not initialized' });
+    }
     db.all('SELECT * FROM steps ORDER BY step_order ASC, created_at ASC', (err, rows) => {
         if (err) {
+            console.error('Error fetching steps:', err);
             res.status(500).json({ error: err.message });
             return;
         }
@@ -272,7 +287,17 @@ app.get('/api/stats', (req, res) => {
 
 // Serve index.html for root and all routes (SPA support)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    try {
+        const indexPath = path.join(__dirname, 'index.html');
+        if (!fs.existsSync(indexPath)) {
+            console.error('index.html not found at:', indexPath);
+            return res.status(500).send('index.html not found');
+        }
+        res.sendFile(indexPath);
+    } catch (error) {
+        console.error('Error serving index.html:', error);
+        res.status(500).send('Error loading page');
+    }
 });
 
 // Health check endpoint
