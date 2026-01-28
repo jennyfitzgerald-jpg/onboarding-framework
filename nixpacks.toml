@@ -2,7 +2,10 @@
 nixPkgs = ["nodejs-18_x"]
 
 [phases.install]
-cmds = ["npm install", "cd .cursor/projects/Frameworks && npm install"]
+cmds = [
+    "npm install",
+    "cd .cursor/projects/Frameworks && npm install || echo 'Subdirectory install skipped'"
+]
 
 [start]
 cmd = "node index.js"
