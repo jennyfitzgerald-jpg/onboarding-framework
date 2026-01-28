@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "postinstall": "cd .cursor/projects/Frameworks && npm install"
+    "postinstall": "cd .cursor/projects/Frameworks && npm install || echo 'Subdirectory install failed, continuing...'"
   },
   "dependencies": {
     "express": "^4.18.2",
