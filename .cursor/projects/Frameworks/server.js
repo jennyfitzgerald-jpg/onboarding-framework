@@ -74,9 +74,348 @@ function initializeDatabase() {
             // Check if we need to seed
             db.get('SELECT COUNT(*) as count FROM steps', (err, row) => {
                 if (!err && row.count === 0) {
-                    console.log('Database is empty, run "npm run seed" to populate with default steps');
+                    console.log('Database is empty, auto-seeding with framework...');
+                    seedDefaultFramework();
                 }
             });
+        }
+    });
+}
+
+// Auto-seed the database with the Diagnexia Onboarding Framework
+function seedDefaultFramework() {
+    const defaultSteps = [
+        {
+            title: "1. BDM Discovery & Qualification",
+            description: `BATON HOLDER: BDM (Commercial)
+CONTRIBUTORS: Sales Support, Mike Langford (SME), Legal
+
+WHAT HAPPENS:
+• BDM scouts market, lands the account, owns the revenue line
+• Complete Client Onboarding Handover sections 1-2
+• Flag expected integration needs early
+• Integration team notified via Chat Space IMMEDIATELY after first call
+
+DELIVERABLES:
+□ Client Handover Document (Sections 1-2)
+□ Integration flagged (Yes/No)
+□ Tier Classification: Strategic / Standard / Low-Touch
+□ Chat Space notification sent to Integration
+
+⚠️ BDM role is CLIENT ADVOCATE only`,
+            leader: "BDM (Commercial)",
+            category: "discovery",
+            step_order: 1
+        },
+        {
+            title: "2. Technical Scoping Call",
+            description: `BATON HOLDER: BDM + Integration Team
+CONTRIBUTORS: Automation Team, IT Security
+
+WHAT HAPPENS:
+• Integration team joins follow-up scoping call
+• Map LIS/LIMS architecture, endpoints, routing
+• Identify automation/scanner workflows
+• Security and compliance requirements captured
+
+DELIVERABLES:
+□ Integration Requirements Document
+□ Technical Feasibility Assessment
+□ Integration Complexity Rating
+□ Estimated integration timeline`,
+            leader: "Integration Team",
+            category: "discovery",
+            step_order: 2
+        },
+        {
+            title: "3. Contracting & Internal Trigger",
+            description: `BATON HOLDER: Legal (Maninder / Danniella)
+CONTRIBUTORS: Finance, BDM, Service Excellence
+
+WHAT HAPPENS:
+• Legal finalizes NDAs, MSAs, SLAs, pricing schedules
+• Finance validates commercial terms
+• Once signed, Legal triggers official onboarding via Chat Space
+
+DELIVERABLES:
+□ Signed NDA
+□ Signed MSA/Contract
+□ SLA Agreement
+□ "Contract Signed" notification
+
+⚠️ NO implementation work starts before contract signature`,
+            leader: "Legal",
+            category: "documentation",
+            step_order: 3
+        },
+        {
+            title: "4. Handover & Chat Space Setup",
+            description: `BATON HOLDER: Customer Service / Service Excellence
+OVERSEEN BY: Mike Langford
+
+WHAT HAPPENS:
+• CS receives notification that contract is signed
+• Create dedicated client Chat Space with ALL stakeholders
+• Assign Implementation Lead
+• Confirm tier classification and timeline
+
+DELIVERABLES:
+□ Chat Space created with all key members
+□ Implementation Lead assigned
+□ Timeline confirmed (Strategic: 8-12wks, Standard: 4-6wks, Low-Touch: 2-3wks)
+
+🎯 FROM THIS POINT: Customer Service owns 95% of lifecycle`,
+            leader: "Customer Service Lead",
+            category: "preparation",
+            step_order: 4
+        },
+        {
+            title: "5. Welcome Call & Pack",
+            description: `BATON HOLDER: CS Implementation Lead
+
+WELCOME CALL:
+• Introduce yourself as single point of contact
+• Explain onboarding journey
+• Set timeline expectations
+• Explain homework requirements
+
+WELCOME PACK (send same day):
+□ IHC & Special Stains Template
+□ SNOMED Code Template
+□ Reporting Proforma Request
+□ Manifest Templates
+□ Shipping Instructions
+□ Portal User Access Form
+□ Portal Manual`,
+            leader: "CS Implementation Lead",
+            category: "engagement",
+            step_order: 5
+        },
+        {
+            title: "6. Homework Collection & Validation",
+            description: `BATON HOLDER: CS Implementation Lead
+
+COLLECT & HAND OFF:
+□ SNOMED Code Template → Automation Team
+□ IHC & Special Stains Template → Automation Team
+□ Reporting Proforma → Path Management
+□ Manifest Templates → Validate format
+□ Portal User Access Form → Collect all users
+□ Shipping info → Lab Ops
+
+CHASE SEQUENCE:
+• Day 3: Friendly reminder
+• Day 5: Chase call
+• Day 7: Escalate to BDM`,
+            leader: "CS Implementation Lead",
+            category: "documentation",
+            step_order: 6
+        },
+        {
+            title: "7. Questionnaire Workshop",
+            description: `BATON HOLDER: CS Implementation Lead
+CONTRIBUTORS: Integration, Automation, Path Mgmt, Case Control, Lab Ops
+
+WORKSHOP AGENDA (90 mins):
+• SNOMED mapping walkthrough
+• Integration requirements deep-dive
+• Reporting/routing requirements
+• Logistics and shipping
+
+POST-WORKSHOP:
+• CS creates Service Design Document draft within 48hrs
+• All teams update their trackers`,
+            leader: "CS Implementation Lead",
+            category: "integration",
+            step_order: 7
+        },
+        {
+            title: "8. Internal Feasibility & Alignment",
+            description: `BATON HOLDER: Service Excellence Lead
+
+INTERNAL REVIEW:
+□ SNOMED mapping feasibility (Automation)
+□ Reporting compatibility (Path Mgmt)
+□ Integration capacity (Integration)
+□ Compliance cleared (QA/Regulatory)
+□ Pathologist coverage confirmed
+□ Lab capacity validated
+
+DELIVERABLE:
+□ Feasibility Sign-Off from all teams
+□ Final Service Design Document
+
+This step prevents "surprises" at go-live`,
+            leader: "Service Excellence Lead",
+            category: "review",
+            step_order: 8
+        },
+        {
+            title: "9. Design Playback & Customer Approval",
+            description: `BATON HOLDER: CS Implementation Lead
+
+PRESENT:
+• Portal access and usage
+• Manifest/submission workflow
+• Case routing logic
+• Reporting pathway
+• On-hold rules
+• TAT commitments
+
+SIGN-OFF REQUIRED:
+□ Customer verbally approves
+□ Confirmation email sent
+□ Go-live date locked
+
+⚠️ Changes loop back to Step 8`,
+            leader: "CS Implementation Lead",
+            category: "review",
+            step_order: 9
+        },
+        {
+            title: "10. Build Phase",
+            description: `BATON HOLDER: Integration + Automation Teams
+CO-ORDINATED BY: CS Implementation Lead
+
+BUILD:
+□ Portal users created
+□ Integration configured
+□ Automation setup
+□ SNOMED mapping applied
+□ Reporting templates loaded
+□ Routing rules configured
+
+Timeline: Strategic 2-3wks, Standard 1-2wks, Low-Touch 3-5 days`,
+            leader: "Integration + Automation",
+            category: "integration",
+            step_order: 10
+        },
+        {
+            title: "11. Training & Dry Run",
+            description: `BATON HOLDER: CS Implementation Lead
+
+TRAINING:
+□ Portal navigation
+□ Case submission
+□ Manifest generation
+□ Report access
+□ On-hold handling
+□ Escalation process
+
+DRY RUN:
+□ Create test case end-to-end
+□ Verify routing logic
+□ Test on-hold triggers
+□ Validate manifest generation`,
+            leader: "CS Implementation Lead",
+            category: "training",
+            step_order: 11
+        },
+        {
+            title: "12. Go-Live & Hypercare",
+            description: `BATON HOLDER: CS Implementation Lead
+
+GO-LIVE DAY:
+□ Activate service
+□ Confirm first submission
+□ Monitor first cases
+□ Immediate issue triage
+
+HYPERCARE (2 weeks):
+□ Daily customer check-ins
+□ Daily internal stand-ups
+□ Rapid issue resolution (4hr SLA)
+
+ESCALATION:
+4hrs unresolved → Service Excellence Lead
+24hrs unresolved → Mike Langford`,
+            leader: "CS Implementation Lead",
+            category: "go-live",
+            step_order: 12
+        },
+        {
+            title: "13. Day 30 Health Check",
+            description: `BATON HOLDER: CS Account Owner
+ESCALATION TO: Service Excellence Lead
+
+SCORING (100 points):
+□ Case Volume vs Expected (20 pts)
+□ TAT Performance (20 pts)
+□ On-Hold Rate (15 pts)
+□ Customer Responsiveness (15 pts)
+□ Issue Frequency (15 pts)
+□ Relationship Temperature (15 pts)
+
+80-100: Healthy
+60-79: Watch - Weekly check-ins
+Below 60: At Risk - Escalate`,
+            leader: "CS Account Owner",
+            category: "health-check",
+            step_order: 13
+        },
+        {
+            title: "14. Day 60 Health Check",
+            description: `BATON HOLDER: CS Account Owner
+ESCALATION TO: Mike Langford
+
+Same scoring criteria as Day 30.
+
+ESCALATE TO MIKE IF:
+• Score dropped from Day 30
+• Score remains below 60
+• Customer dissatisfied
+• Volume below projection
+
+MIKE'S INVOLVEMENT:
+• Executive sponsor call
+• Resource reallocation
+• Strategic intervention`,
+            leader: "CS Account Owner",
+            category: "health-check",
+            step_order: 14
+        },
+        {
+            title: "15. Day 90 Health Check & BAU",
+            description: `BATON HOLDER: CS Account Owner
+ESCALATION TO: Jenny (if critical)
+
+80-100: Full BAU transition
+60-79: Extended Watch (+30 days)
+Below 60: Critical - Executive intervention
+
+BAU TRANSITION:
+□ Steady-state cadence set
+□ KPI reporting automated
+□ Feedback loops in place
+□ NPS survey scheduled
+□ Account in review cycle
+
+ONGOING:
+• CS: Day-to-day relationship
+• BDM: Commercial, upsell
+• SX: Quarterly reviews`,
+            leader: "CS Account Owner",
+            category: "health-check",
+            step_order: 15
+        }
+    ];
+
+    const stmt = db.prepare(`
+        INSERT INTO steps (id, title, description, leader, category, completed, created_at, step_order)
+        VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+    `);
+
+    defaultSteps.forEach((step, index) => {
+        const id = `step-${Date.now()}-${index}`;
+        const now = new Date().toISOString();
+        stmt.run(id, step.title, step.description, step.leader, step.category, now, step.step_order);
+    });
+
+    stmt.finalize((err) => {
+        if (err) {
+            console.error('Error seeding database:', err.message);
+        } else {
+            console.log(`Auto-seeded ${defaultSteps.length} onboarding steps`);
         }
     });
 }
