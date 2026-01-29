@@ -618,6 +618,403 @@ body {
     color: var(--gray-500);
 }
 
+/* Form Sections */
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--gray-800);
+}
+
+.form-section h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+}
+
+/* Gating Strip (Feature 1) */
+.gating-strip {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--warning);
+}
+
+.gating-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gating-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.gating-value {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.gating-value.gating-ok {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.gating-value.gating-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Phase Indicator / Traffic Light (Feature 11) */
+.phase-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.phase-planning { background: var(--gray-400); }
+.phase-discovery { background: var(--warning); }
+.phase-build { background: var(--primary); }
+.phase-ready { background: var(--success); }
+.phase-live { background: var(--success); }
+
+.phase-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.phase-badge.phase-planning { background: var(--gray-200); color: var(--gray-600); }
+.phase-badge.phase-discovery { background: #fef3c7; color: #92400e; }
+.phase-badge.phase-build { background: #dbeafe; color: #1e40af; }
+.phase-badge.phase-ready { background: #d1fae5; color: #065f46; }
+.phase-badge.phase-live { background: #d1fae5; color: #065f46; }
+
+/* Alerts Panel (Feature 5) */
+.alerts-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.alert-item:last-child {
+    margin-bottom: 0;
+}
+
+.alert-item.alert-high {
+    background: #fee2e2;
+    border-left: 3px solid var(--danger);
+}
+
+.alert-item.alert-medium {
+    background: #fef3c7;
+    border-left: 3px solid var(--warning);
+}
+
+.alert-item.alert-low {
+    background: var(--gray-50);
+    border-left: 3px solid var(--gray-400);
+}
+
+.alert-icon {
+    font-size: 1.25rem;
+}
+
+.alert-message {
+    flex: 1;
+    font-size: 0.875rem;
+}
+
+.no-alerts {
+    text-align: center;
+    padding: 1rem;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+/* Requirements Section (Feature 2) */
+.requirements-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.requirements-display {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.req-item {
+    padding: 0.75rem;
+    background: var(--gray-50);
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.req-section {
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary);
+}
+
+.req-confirmed {
+    padding: 0.75rem;
+    background: #d1fae5;
+    border-radius: 6px;
+    color: #065f46;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.req-updated {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 0.5rem;
+}
+
+/* Date History (Feature 3) */
+.date-history-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.date-history {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.date-entry {
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.date-entry.original {
+    border-left: 3px solid var(--primary);
+}
+
+.date-entry.revised {
+    border-left: 3px solid var(--warning);
+}
+
+.date-reason, .date-approver, .date-delay {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+}
+
+/* Tasks Table (Feature 4) */
+.tasks-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.tasks-table thead {
+    background: var(--gray-50);
+}
+
+.tasks-table th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--gray-700);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.tasks-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.task-row:hover {
+    background: var(--gray-50);
+}
+
+.task-status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.task-status-badge.status-not_started { background: var(--gray-200); color: var(--gray-600); }
+.task-status-badge.status-in_progress { background: #dbeafe; color: #1e40af; }
+.task-status-badge.status-blocked { background: #fee2e2; color: #991b1b; }
+.task-status-badge.status-done { background: #d1fae5; color: #065f46; }
+
+.task-phase-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.task-phase-badge.phase-phase_1 { background: #dbeafe; color: #1e40af; }
+.task-phase-badge.phase-phase_2 { background: #fef3c7; color: #92400e; }
+
+/* Readiness Section (Feature 6) */
+.readiness-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.readiness-approved {
+    padding: 1rem;
+    background: #d1fae5;
+    border-radius: 6px;
+    border-left: 3px solid var(--success);
+}
+
+.readiness-approved strong {
+    color: #065f46;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.readiness-pending {
+    padding: 1rem;
+    background: #fef3c7;
+    border-radius: 6px;
+    border-left: 3px solid var(--warning);
+    color: #92400e;
+}
+
+/* Escalation Section (Feature 9) */
+.escalation-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+}
+
+/* Portfolio Table (Feature 12) */
+.portfolio-table {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.portfolio-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.portfolio-table thead {
+    background: var(--gray-50);
+}
+
+.portfolio-table th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--gray-700);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.portfolio-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.portfolio-table tr:hover {
+    background: var(--gray-50);
+}
+
+.short-code {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+/* Section */
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {

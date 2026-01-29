@@ -27,6 +27,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     All Clients
                 </a>
+                <a href="#" class="nav-item" data-view="portfolio">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"></path></svg>
+                    Portfolio
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -121,10 +125,31 @@
                     <div class="progress-bar"><div class="progress-fill" id="clientProgressFill"></div></div>
                 </div>
 
+                <!-- Gating Strip (Feature 1) -->
+                <div class="gating-strip" id="gatingStrip">
+                    <div class="gating-item">
+                        <span class="gating-label">Contract:</span>
+                        <span class="gating-value" id="gatingContract">-</span>
+                    </div>
+                    <div class="gating-item">
+                        <span class="gating-label">DPIA Required:</span>
+                        <span class="gating-value" id="gatingDpiaRequired">-</span>
+                    </div>
+                    <div class="gating-item">
+                        <span class="gating-label">DPIA Status:</span>
+                        <span class="gating-value" id="gatingDpiaStatus">-</span>
+                    </div>
+                    <button class="btn btn-sm btn-secondary" id="editGatingBtn">Edit Gating</button>
+                </div>
+
                 <div class="client-details-grid">
                     <div class="detail-card">
                         <label>BDM</label>
                         <span id="clientBDM">Not assigned</span>
+                    </div>
+                    <div class="detail-card">
+                        <label>Short Code</label>
+                        <span id="clientShortCode">-</span>
                     </div>
                     <div class="detail-card">
                         <label>Contract Date</label>
@@ -133,14 +158,95 @@
                     <div class="detail-card">
                         <label>Go-Live Date</label>
                         <span id="clientGoLiveDate">-</span>
+                        <button class="btn btn-sm btn-secondary" id="changeDateBtn" style="margin-top: 0.5rem;">Change Date</button>
                     </div>
                     <div class="detail-card">
                         <label>Health Score</label>
                         <span id="clientHealthScore">100</span>
                     </div>
+                    <div class="detail-card">
+                        <label>Single Source</label>
+                        <a href="#" id="clientSingleSourceLink" target="_blank" style="display: none;">Open Client Space</a>
+                        <span id="clientSingleSourceNone" style="color: var(--gray-500);">Not set</span>
+                    </div>
                 </div>
 
-                <div class="steps-container" id="clientSteps"></div>
+                <!-- Alerts Panel (Feature 5) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Alerts & Red Flags</h3>
+                    </div>
+                    <div id="alertsPanel" class="alerts-panel"></div>
+                </div>
+
+                <!-- Service Discovery & Requirements (Feature 2) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Service Discovery & Requirements</h3>
+                        <button class="btn btn-secondary btn-sm" id="editRequirementsBtn">Edit Requirements</button>
+                    </div>
+                    <div id="requirementsSection" class="requirements-section"></div>
+                </div>
+
+                <!-- Target Date Management (Feature 3) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Target Go-Live Date</h3>
+                    </div>
+                    <div id="dateHistorySection" class="date-history-section"></div>
+                </div>
+
+                <!-- Task Checklist (Feature 4) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Task Checklist</h3>
+                        <button class="btn btn-primary btn-sm" id="addTaskBtn">Add Task</button>
+                    </div>
+                    <div id="tasksSection" class="tasks-section"></div>
+                </div>
+
+                <!-- Go-Live Readiness (Feature 6) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Go-Live Readiness</h3>
+                        <button class="btn btn-primary btn-sm" id="recordReadinessBtn" style="display: none;">Record Sign-Off</button>
+                    </div>
+                    <div id="readinessSection" class="readiness-section"></div>
+                </div>
+
+                <!-- Escalation (Feature 9) -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Communication & Escalation</h3>
+                    </div>
+                    <div id="escalationSection" class="escalation-section">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="customerNonResponsiveCheck">
+                            <span>Customer non-responsive</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="salesEscalationCheck">
+                            <span>Sales escalation triggered</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Onboarding Steps -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3>Onboarding Steps</h3>
+                    </div>
+                    <div class="steps-container" id="clientSteps"></div>
+                </div>
+            </div>
+
+            <!-- Portfolio View (Feature 12) -->
+            <div id="portfolioView" class="view">
+                <header class="view-header">
+                    <h2>Portfolio View</h2>
+                    <p class="subtitle">All clients in flight - operational prioritisation and capacity planning</p>
+                </header>
+                <div id="portfolioTable" class="portfolio-table"></div>
             </div>
         </main>
     </div>
@@ -154,37 +260,106 @@
             </div>
             <form id="clientForm">
                 <input type="hidden" id="clientId">
-                <div class="form-group">
-                    <label for="clientNameInput">Client Name *</label>
-                    <input type="text" id="clientNameInput" required placeholder="e.g., North West London Pathology">
-                </div>
-                <div class="form-row">
+                
+                <!-- Client Identity (Feature 10) -->
+                <div class="form-section">
+                    <h3>Client Identity</h3>
                     <div class="form-group">
-                        <label for="clientTierInput">Tier</label>
-                        <select id="clientTierInput">
-                            <option value="standard">Standard</option>
-                            <option value="strategic">Strategic (White Glove)</option>
-                            <option value="low-touch">Low-Touch (Digital Only)</option>
+                        <label for="clientLegalEntityInput">Legal Entity *</label>
+                        <input type="text" id="clientLegalEntityInput" required placeholder="e.g., North West London Pathology NHS Trust">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientBrandNameInput">Brand Name</label>
+                            <input type="text" id="clientBrandNameInput" placeholder="e.g., NWLP">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientShortCodeInput">Short Code *</label>
+                            <input type="text" id="clientShortCodeInput" required placeholder="e.g., NWLP" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientOperatingSitesInput">Operating Sites</label>
+                        <textarea id="clientOperatingSitesInput" rows="2" placeholder="List sites, one per line or comma-separated"></textarea>
+                    </div>
+                </div>
+
+                <!-- Gating (Feature 1) -->
+                <div class="form-section">
+                    <h3>Mandatory Gating</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientContractStatusInput">Contract Status *</label>
+                            <select id="clientContractStatusInput" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="in_progress">In Progress</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientDpiaRequiredInput">DPIA Required?</label>
+                            <select id="clientDpiaRequiredInput">
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="dpiaStatusGroup" style="display: none;">
+                        <label for="clientDpiaStatusInput">DPIA Status</label>
+                        <select id="clientDpiaStatusInput">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="waived">Waived</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="clientBDMInput">BDM Name</label>
-                        <input type="text" id="clientBDMInput" placeholder="e.g., John Smith">
-                    </div>
                 </div>
-                <div class="form-row">
+
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h3>Basic Information</h3>
                     <div class="form-group">
-                        <label for="clientContractDateInput">Contract Date</label>
-                        <input type="date" id="clientContractDateInput">
+                        <label for="clientNameInput">Client Name *</label>
+                        <input type="text" id="clientNameInput" required placeholder="e.g., North West London Pathology">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientTierInput">Tier</label>
+                            <select id="clientTierInput">
+                                <option value="standard">Standard</option>
+                                <option value="strategic">Strategic (White Glove)</option>
+                                <option value="low-touch">Low-Touch (Digital Only)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientBDMInput">BDM Name</label>
+                            <input type="text" id="clientBDMInput" placeholder="e.g., John Smith">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientContractDateInput">Contract Date</label>
+                            <input type="date" id="clientContractDateInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientPhaseStatusInput">Phase Status</label>
+                            <select id="clientPhaseStatusInput">
+                                <option value="planning">Planning</option>
+                                <option value="discovery">Discovery</option>
+                                <option value="in_build">In Build</option>
+                                <option value="ready_to_go_live">Ready to Go-Live</option>
+                                <option value="live">Live</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="clientGoLiveDateInput">Target Go-Live</label>
-                        <input type="date" id="clientGoLiveDateInput">
+                        <label for="clientSingleSourceUrlInput">Single Source of Truth (URL)</label>
+                        <input type="url" id="clientSingleSourceUrlInput" placeholder="https://sharepoint.com/... or Chat Space link">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="clientNotesInput">Notes</label>
-                    <textarea id="clientNotesInput" rows="3" placeholder="Any special requirements or notes..."></textarea>
+                    <div class="form-group">
+                        <label for="clientNotesInput">Notes</label>
+                        <textarea id="clientNotesInput" rows="3" placeholder="Any special requirements or notes..."></textarea>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeClientModal()">Cancel</button>
@@ -222,6 +397,238 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Gating Modal -->
+    <div class="modal" id="gatingModal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Edit Gating</h2>
+                <button class="modal-close" onclick="closeGatingModal()">&times;</button>
+            </div>
+            <form id="gatingForm">
+                <input type="hidden" id="gatingClientId">
+                <div class="form-group">
+                    <label for="gatingContractStatus">Contract Status *</label>
+                    <select id="gatingContractStatus" required>
+                        <option value="">Select...</option>
+                        <option value="yes">Yes</option>
+                        <option value="in_progress">In Progress</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gatingDpiaRequired">DPIA Required?</label>
+                    <select id="gatingDpiaRequired">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group" id="gatingDpiaStatusGroup" style="display: none;">
+                    <label for="gatingDpiaStatus">DPIA Status</label>
+                    <select id="gatingDpiaStatus">
+                        <option value="">Select...</option>
+                        <option value="yes">Yes</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="waived">Waived</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeGatingModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Date Modal -->
+    <div class="modal" id="dateChangeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Go-Live Date</h2>
+                <button class="modal-close" onclick="closeDateChangeModal()">&times;</button>
+            </div>
+            <form id="dateChangeForm">
+                <input type="hidden" id="dateChangeClientId">
+                <div class="form-group">
+                    <label for="dateChangeTargetDate">New Target Date *</label>
+                    <input type="date" id="dateChangeTargetDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="dateChangeReason">Reason for Change *</label>
+                    <textarea id="dateChangeReason" rows="3" required placeholder="Explain why the date is changing..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dateChangeApprovedBy">Approved By *</label>
+                    <input type="text" id="dateChangeApprovedBy" required placeholder="Name of approver">
+                </div>
+                <div class="form-group">
+                    <label for="dateChangeDelayCausedBy">Delay Caused By</label>
+                    <select id="dateChangeDelayCausedBy">
+                        <option value="">N/A</option>
+                        <option value="diagnexia">Diagnexia</option>
+                        <option value="customer">Customer</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeDateChangeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Date</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Requirements Modal -->
+    <div class="modal" id="requirementsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Service Discovery & Requirements</h2>
+                <button class="modal-close" onclick="closeRequirementsModal()">&times;</button>
+            </div>
+            <form id="requirementsForm">
+                <input type="hidden" id="requirementsClientId">
+                <div class="form-group">
+                    <label for="requirementsStandardVsNonStandard">Standard vs Non-Standard</label>
+                    <textarea id="requirementsStandardVsNonStandard" rows="2" placeholder="Describe standard build vs non-standard requirements..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="requirementsIntegration">Integration Expectations</label>
+                    <textarea id="requirementsIntegration" rows="2" placeholder="e.g. EMR, portal, text reports..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="requirementsSpecimenScope">Specimen / Blocks / Slides Scope</label>
+                    <textarea id="requirementsSpecimenScope" rows="2" placeholder="Describe scope - this drives complexity..."></textarea>
+                </div>
+                <div class="form-section">
+                    <h4>Day 1 (Minimum Viable Go-Live)</h4>
+                    <div class="form-group">
+                        <textarea id="requirementsDay1Scope" rows="4" placeholder="What is included in Day 1 go-live..."></textarea>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h4>Day 30 / Phase 2 / Future</h4>
+                    <div class="form-group">
+                        <textarea id="requirementsPhase2Scope" rows="4" placeholder="What is deferred to Phase 2..."></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="requirementsContent">Additional Notes / Content</label>
+                    <textarea id="requirementsContent" rows="4" placeholder="Any additional requirements or notes..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="requirementsPlaybackConfirmed">
+                        <span>Final requirements playback confirmed</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeRequirementsModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Requirements</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="taskModalTitle">Add Task</h2>
+                <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskClientId">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label for="taskTitle">Requirement / Task Title *</label>
+                    <input type="text" id="taskTitle" required placeholder="e.g., EMR integration setup">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskOwnerTeam">Owner Team</label>
+                        <input type="text" id="taskOwnerTeam" placeholder="e.g., Integration Team">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskOwnerName">Owner Name</label>
+                        <input type="text" id="taskOwnerName" placeholder="e.g., John Smith">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskStartDate">Start Date</label>
+                        <input type="date" id="taskStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskPhase">Phase</label>
+                        <select id="taskPhase">
+                            <option value="phase_1">Phase 1 (Go-Live)</option>
+                            <option value="phase_2">Phase 2 / Later</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskSeverity">Severity</label>
+                        <select id="taskSeverity">
+                            <option value="">None</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskStatus">Status</label>
+                    <select id="taskStatus">
+                        <option value="not_started">Not Started</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="blocked">Blocked</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskCompletionDate">Completion Date</label>
+                    <input type="date" id="taskCompletionDate">
+                </div>
+                <div class="form-group">
+                    <label for="taskCompletionEvidence">Completion Evidence</label>
+                    <textarea id="taskCompletionEvidence" rows="2" placeholder="Link or note proving completion..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Go-Live Readiness Modal -->
+    <div class="modal" id="readinessModal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Go-Live Readiness Sign-Off</h2>
+                <button class="modal-close" onclick="closeReadinessModal()">&times;</button>
+            </div>
+            <form id="readinessForm">
+                <input type="hidden" id="readinessClientId">
+                <div class="form-group">
+                    <label for="readinessApprovedBy">Senior Accountable Owner *</label>
+                    <input type="text" id="readinessApprovedBy" required placeholder="Name of approver">
+                </div>
+                <div class="form-group">
+                    <label for="readinessOutOfScope">Explicitly Out of Scope / Phase 2</label>
+                    <textarea id="readinessOutOfScope" rows="3" placeholder="What is explicitly NOT included in go-live..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeReadinessModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Record Sign-Off</button>
                 </div>
             </form>
         </div>
